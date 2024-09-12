@@ -11,8 +11,8 @@ export default function NavBar() {
         <div className="flex items-center cursor-pointer gap-[4px] py-[8px] px-[14px] text-[#021526] font-medium text-[16px]">საძინებლების რაოდენობა<IoIosArrowDown /></div>
       </div>
       <div className="flex gap-[16px]">
-        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white"><FiPlus/>ლისტინგის დამატება</div>
-        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D]"><FiPlus/>აგენტის დამატება </div>
+        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]"><FiPlus/>ლისტინგის დამატება</div>
+        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"><FiPlus/>აგენტის დამატება </div>
       </div>
     </nav>
   )
