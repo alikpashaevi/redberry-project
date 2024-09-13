@@ -6,6 +6,7 @@ import MainCard from '@/components/MainPageComponents/MainCard';
 import NavBar from '@/components/MainPageComponents/NavBar';
 import Properties from '@/components/MainPageComponents/Properties';
 import RegionModal from '@/components/MainPageComponents/modals/RegionModal';
+import PriceRangeModal from "@/components/MainPageComponents/modals/PriceRangeModal";
 
 export default function Home() {
   interface RealEstate {
@@ -112,6 +113,7 @@ export default function Home() {
         onSelectRegions={handleSelectRegions}
         onClose={toggleModal}
       />
+      <PriceRangeModal />
       <Properties
         selectedRegions={regions.filter((region) => selectedRegionIds.includes(region.id)).map((region) => region.name)} // Pass region names instead of IDs
       />
