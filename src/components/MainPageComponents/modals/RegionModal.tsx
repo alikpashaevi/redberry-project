@@ -9,21 +9,21 @@ export default function RegionModal({
 }: {
   isOpen: boolean;
   regions: { id: number; name: string }[];
-  onSelectRegions: (regions: string[]) => void;
+  onSelectRegions: (regionIds: number[]) => void;
   onClose: () => void;
 }) {
-  const [selected, setSelected] = useState<string[]>([]);
+  const [selected, setSelected] = useState<number[]>([]); // Change to store selected region IDs
 
-  const handleSelect = (regionName: string) => {
+  const handleSelect = (regionId: number) => {
     setSelected((prevSelected) =>
-      prevSelected.includes(regionName)
-        ? prevSelected.filter((r) => r !== regionName)
-        : [...prevSelected, regionName]
+      prevSelected.includes(regionId)
+        ? prevSelected.filter((id) => id !== regionId)
+        : [...prevSelected, regionId]
     );
   };
 
   const applySelection = () => {
-    onSelectRegions(selected); // Send selected regions to parent
+    onSelectRegions(selected); // Send selected region IDs to parent
     onClose(); // Close the modal
   };
 
@@ -42,8 +42,8 @@ export default function RegionModal({
               >
                 <input
                   type="checkbox"
-                  checked={selected.includes(region.name)}
-                  onChange={() => handleSelect(region.name)}
+                  checked={selected.includes(region.id)}
+                  onChange={() => handleSelect(region.id)} // Use ID instead of name
                   className="hidden peer"
                   id={`checkbox-${region.id}`}
                 />
@@ -53,7 +53,7 @@ export default function RegionModal({
                 >
                   <svg
                     className={`w-4 h-4 text-white ${
-                      selected.includes(region.name) ? "block" : "hidden"
+                      selected.includes(region.id) ? "block" : "hidden"
                     }`}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
