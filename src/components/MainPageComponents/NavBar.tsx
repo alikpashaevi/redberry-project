@@ -2,7 +2,7 @@
 import { IoIosArrowDown } from "react-icons/io";
 import { FiPlus } from "react-icons/fi";
 
-export default function NavBar({ toggleRegionModal, togglePriceModal }: { toggleRegionModal: () => void, togglePriceModal: () => void }) {
+export default function NavBar({ toggleRegionModal, togglePriceModal, toggleAreaModal }: { toggleRegionModal: () => void, togglePriceModal: () => void, toggleAreaModal: () => void }) {
   return (
     <nav className="absolute top-[177px] left-[162px] flex justify-between align-center w-[1596px] h-auto">
       <div className="flex p-[6px] gap-[24px] rounded-[10px]  border-[1px] border-[#DBDBDB]">
@@ -18,7 +18,9 @@ export default function NavBar({ toggleRegionModal, togglePriceModal }: { toggle
         >
           საფასო კატეგორია <IoIosArrowDown />
         </div>
-        <div className="flex items-center cursor-pointer gap-[4px] py-[8px] px-[14px] text-[#021526] font-medium text-[16px]">
+        <div className="flex items-center cursor-pointer gap-[4px] py-[8px] px-[14px] text-[#021526] font-medium text-[16px]"
+          onClick={toggleAreaModal}
+        >
           ფართობი <IoIosArrowDown />
         </div>
         <div className="flex items-center cursor-pointer gap-[4px] py-[8px] px-[14px] text-[#021526] font-medium text-[16px]">

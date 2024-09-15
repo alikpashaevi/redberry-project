@@ -13,7 +13,7 @@ export default function AreaRangeModal({
   const [minArea, setMinArea] = useState<number | null>(null);
   const [maxArea, setMaxArea] = useState<number | null>(null);
 
-  const applyPriceRange = () => {
+  const applyAreaRange = () => {
     onSelectAreaRange(minArea, maxArea);
     onClose(); // Close the modal
   };
@@ -34,7 +34,7 @@ export default function AreaRangeModal({
                 value={minArea || ""}
                 onChange={(e) => setMinArea(e.target.value ? parseInt(e.target.value) : null)}
               />
-              <span className="absolute top-[10px] right-[10px]">₾</span>
+              <span className="absolute top-[10px] right-[10px]">მ²</span>
             </div>
             <div className="w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px]">
             <input
@@ -44,7 +44,7 @@ export default function AreaRangeModal({
                 value={maxArea || ""}
                 onChange={(e) => setMaxArea(e.target.value ? parseInt(e.target.value) : null)}
               />
-              <span className="absolute top-[10px] right-[10px]">₾</span>
+              <span className="absolute top-[10px] right-[10px]">მ²</span>
             </div>
           </div>
           <div className="w-[334px] flex gap-[24px]">
@@ -73,7 +73,7 @@ export default function AreaRangeModal({
         <div className="w-full flex justify-end">
           <button
             className="rounded-[8px] py-[8px] px-[14px] bg-[#F93B1D] cursor-pointer font-medium text-white text-[14px] text-center leading-[16.8px]"
-              onClick={applyPriceRange}
+              onClick={applyAreaRange}
           >
             არჩევა
           </button>

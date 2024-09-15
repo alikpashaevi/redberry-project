@@ -7,6 +7,7 @@ import NavBar from '@/components/MainPageComponents/NavBar';
 import Properties from '@/components/MainPageComponents/Properties';
 import RegionModal from '@/components/MainPageComponents/modals/RegionModal';
 import PriceRangeModal from "@/components/MainPageComponents/modals/PriceRangeModal";
+import AreaRangeModal from "@/components/MainPageComponents/modals/AreaRangeModal";
 
 export default function Home() {
   interface RealEstate {
@@ -30,11 +31,14 @@ export default function Home() {
   const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([]); // Still track IDs here
   const [isOpen, setIsOpen] = useState(false);
   const [isPriceOpen, setIsPriceOpen] = useState(false);
+  const [isAreaOpen, setIsAreaOpen] = useState(false);
   const [realEstates, setRealEstates] = useState<RealEstate[]>([]);
   const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [minPrice, setMinPrice] = useState<number | null>(null);
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [minArea, setMinArea] = useState<number | null>(null);
+  const [maxArea, setMaxArea] = useState<number | null>(null);
 
 
   // Fetch the real estate data from the API
@@ -102,32 +106,48 @@ export default function Home() {
   
     // Filter by selected price range
     if (minPrice !== null && maxPrice !== null) {
-      // console.log("Min Price:", minPrice, "Max Price:", maxPrice);
-      // console.log("Filtered Real Estates before:", filtered);
       filtered = filtered.filter(
         (estate) => estate.price >= minPrice && estate.price <= maxPrice
       );
-      // console.log("Filtered Real Estates:", filtered);
+    }
+  
+    // Filter by selected area range
+    if (minArea !== null && maxArea !== null) {
+      filtered = filtered.filter(
+        (estate) => estate.area >= minArea && estate.area <= maxArea
+      );
     }
   
     setFilteredRealEstates(filtered);
-  }, [selectedRegionIds, regions, realEstates, minPrice, maxPrice]);
+  }, [selectedRegionIds, regions, realEstates, minPrice, maxPrice, minArea, maxArea]);
   
   
 
   const toggleRegionModal = () => {
     setIsOpen(!isOpen); // Toggle region modal
     if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
+    if (isAreaOpen) setIsAreaOpen(false); // Close area modal if it's open
   };
   
   const togglePriceModal = () => {
     setIsPriceOpen(!isPriceOpen); // Toggle price modal
     if (isOpen) setIsOpen(false); // Close region modal if it's open
+    if (isAreaOpen) setIsAreaOpen(false); // Close area modal if it's open
+  };
+
+  const toggleAreaModal = () => {
+    setIsAreaOpen(!isAreaOpen); // Toggle area modal
+    if (isOpen) setIsOpen(false); // Close region modal if it's open
+    if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
   };
 
   return (
     <div className="w-[1596px] flex flex-col">
-      <NavBar toggleRegionModal={toggleRegionModal} togglePriceModal={togglePriceModal} />
+      <NavBar 
+        toggleRegionModal={toggleRegionModal} 
+        togglePriceModal={togglePriceModal} 
+        toggleAreaModal={toggleAreaModal} 
+      />
       <RegionModal
         isOpen={isOpen}
         regions={regions}
@@ -143,6 +163,14 @@ export default function Home() {
           setIsPriceOpen(false); // Close price modal after applying
         }}
       />
+      <AreaRangeModal 
+        isOpen={isAreaOpen}
+        onClose={toggleAreaModal}
+        onSelectAreaRange={(minArea, maxArea) => {
+          setMinArea(minArea);
+          setMaxArea(maxArea);
+          setIsAreaOpen(false); // Close area modal after applying
+        }} />
       <Properties
         selectedRegions={regions.filter((region) => selectedRegionIds.includes(region.id)).map((region) => region.name)} // Pass region names instead of IDs
         minPrice={minPrice}
