@@ -25,28 +25,34 @@ export default function AreaRangeModal({
           <h3 className="font-medium text-[16px] text-[#021526] leading-[19.2px]">
             ფასის მიხედვით
           </h3>
-          <div className="flex gap-[15px] w-[325px]">
-            <div className="w-full relative rounded-[6px] pr-[24px]  border-[1px] p-[10px]">
-            <input
-                type="text"
-                className="w-full border-none outline-none"
-                placeholder="დან"
-                value={minArea || ""}
-                onChange={(e) => setMinArea(e.target.value ? parseInt(e.target.value) : null)}
-              />
-              <span className="absolute top-[10px] right-[10px]">მ²</span>
+          <div className="flex flex-col gap-[8px] w-full">
+            <div className="flex gap-[15px] w-full">
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minArea !== null && maxArea !== null && minArea > maxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+                <input
+                  type="text"
+                  className='w-full border-none outline-none'
+                  placeholder="დან"
+                  value={minArea || ""}
+                  onChange={(e) => setMinArea(e.target.value ? parseInt(e.target.value) : null)}
+                />
+                <span className="absolute top-[10px] right-[10px]">მ²</span>
+              </div>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minArea !== null && maxArea !== null && minArea > maxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+                <input
+                  type="text"
+                  className='w-full border-none outline-none'
+                  placeholder="მდე"
+                  value={maxArea || ""}
+                  onChange={(e) => setMaxArea(e.target.value ? parseInt(e.target.value) : null)}
+                />
+                <span className="absolute top-[10px] right-[10px]">მ²</span>
+              </div>
             </div>
-            <div className="w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px]">
-            <input
-                type="text"
-                className="w-full border-none outline-none"
-                placeholder="მდე"
-                value={maxArea || ""}
-                onChange={(e) => setMaxArea(e.target.value ? parseInt(e.target.value) : null)}
-              />
-              <span className="absolute top-[10px] right-[10px]">მ²</span>
-            </div>
+            {minArea !== null && maxArea !== null && minArea > maxArea && (
+              <p className="text-red-600 text-[12px] w-full">ჩაწერეთ ვალიდური მონაცემები</p>
+            )}
           </div>
+
           <div className="w-[334px] flex gap-[24px]">
             <div className="w-full flex flex-col gap-[16px]">
               <h3 className="text-start text-[#021526] font-medium text-[14px] leading-[16.8px]">მინ. მ²</h3>

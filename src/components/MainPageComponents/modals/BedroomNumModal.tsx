@@ -1,14 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function BedroomNumModal({
   isOpen,
   onSelectBedroomNum,
   onClose,
+  clearBedroomInput, // Accept the function to clear the input
 }: {
   isOpen: boolean;
   onSelectBedroomNum: (bedroomNum: number | null) => void;
   onClose: () => void;
+  clearBedroomInput: () => void; // Clear function for resetting input
 }) {
   const [bedroomNum, setBedroomNum] = useState<number | null>(null);
 
@@ -17,8 +19,15 @@ export default function BedroomNumModal({
     onClose(); // Close the modal
   };
 
+  // Effect to clear the bedroom input when the filter is reset
+  useEffect(() => {
+    if (!bedroomNum) {
+      setBedroomNum(null);
+    }
+  }, [clearBedroomInput]);
+
   return (
-    <div className={`absolute z-10 bg-white top-[234px] left-[529px] w-[382px] rounded-[10px] border-[1px] border-[#DBDBDB] p-[24px] ${isOpen ? "block" : "hidden"}`}>
+    <div className={`absolute z-10 bg-white top-[234px] left-[579px] w-[382px] rounded-[10px] border-[1px] border-[#DBDBDB] p-[24px] ${isOpen ? "block" : "hidden"}`}>
       <div className="flex flex-col gap-[32px]">
         <div className="w-full flex flex-col gap-[24px]">
           <h3 className="font-medium text-[16px] text-[#021526] leading-[19.2px]">
@@ -30,7 +39,9 @@ export default function BedroomNumModal({
               className="w-full border-none outline-none"
               placeholder="საძინებლების რაოდენობა"
               value={bedroomNum || ""}
-              onChange={(e) => setBedroomNum(e.target.value ? parseInt(e.target.value) : null)}
+              onChange={(e) =>
+                setBedroomNum(e.target.value ? parseInt(e.target.value) : null)
+              }
             />
           </div>
         </div>
