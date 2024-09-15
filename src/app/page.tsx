@@ -29,9 +29,13 @@ export default function Home() {
   const [regions, setRegions] = useState<{ id: number, name: string }[]>([]); 
   const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([]); // Still track IDs here
   const [isOpen, setIsOpen] = useState(false);
+  const [isPriceOpen, setIsPriceOpen] = useState(false);
   const [realEstates, setRealEstates] = useState<RealEstate[]>([]);
   const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [minPrice, setMinPrice] = useState<number | null>(null);
+  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+
 
   // Fetch the real estate data from the API
   useEffect(() => {
@@ -83,39 +87,66 @@ export default function Home() {
 
   // Filter real estate data based on selected region names
   useEffect(() => {
+    let filtered = realEstates;
+  
+    // Filter by selected regions
     if (selectedRegionIds.length > 0) {
       const selectedRegionNames = regions
         .filter((region) => selectedRegionIds.includes(region.id))
         .map((region) => region.name);
   
-      // Filter based on the region name inside the real estate's city object
-      const filtered = realEstates.filter((estate) => 
+      filtered = filtered.filter((estate) =>
         selectedRegionNames.includes(estate.city.region.name)
       );
-      
-      setFilteredRealEstates(filtered);
-    } else {
-      setFilteredRealEstates(realEstates); // Show all if no regions are selected
     }
-  }, [selectedRegionIds, regions, realEstates]);
+  
+    // Filter by selected price range
+    if (minPrice !== null && maxPrice !== null) {
+      // console.log("Min Price:", minPrice, "Max Price:", maxPrice);
+      // console.log("Filtered Real Estates before:", filtered);
+      filtered = filtered.filter(
+        (estate) => estate.price >= minPrice && estate.price <= maxPrice
+      );
+      // console.log("Filtered Real Estates:", filtered);
+    }
+  
+    setFilteredRealEstates(filtered);
+  }, [selectedRegionIds, regions, realEstates, minPrice, maxPrice]);
+  
   
 
-  const toggleModal = () => {
-    setIsOpen(!isOpen);
+  const toggleRegionModal = () => {
+    setIsOpen(!isOpen); // Toggle region modal
+    if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
+  };
+  
+  const togglePriceModal = () => {
+    setIsPriceOpen(!isPriceOpen); // Toggle price modal
+    if (isOpen) setIsOpen(false); // Close region modal if it's open
   };
 
   return (
     <div className="w-[1596px] flex flex-col">
-      <NavBar toggleModal={toggleModal} />
+      <NavBar toggleRegionModal={toggleRegionModal} togglePriceModal={togglePriceModal} />
       <RegionModal
         isOpen={isOpen}
         regions={regions}
         onSelectRegions={handleSelectRegions}
-        onClose={toggleModal}
+        onClose={toggleRegionModal}
       />
-      <PriceRangeModal />
+      <PriceRangeModal 
+        isOpen={isPriceOpen}
+        onClose={togglePriceModal}
+        onSelectPriceRange={(minPrice, maxPrice) => {
+          setMinPrice(minPrice);
+          setMaxPrice(maxPrice);
+          setIsPriceOpen(false); // Close price modal after applying
+        }}
+      />
       <Properties
         selectedRegions={regions.filter((region) => selectedRegionIds.includes(region.id)).map((region) => region.name)} // Pass region names instead of IDs
+        minPrice={minPrice}
+        maxPrice={maxPrice}
       />
       <MainCard 
         realEstates={filteredRealEstates} // Pass filtered data
