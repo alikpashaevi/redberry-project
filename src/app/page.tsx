@@ -9,6 +9,7 @@ import RegionModal from '@/components/MainPageComponents/modals/RegionModal';
 import PriceRangeModal from "@/components/MainPageComponents/modals/PriceRangeModal";
 import AreaRangeModal from "@/components/MainPageComponents/modals/AreaRangeModal";
 import BedroomNumModal from "@/components/MainPageComponents/modals/BedroomNumModal";
+import AddAgentModal from "@/components/MainPageComponents/modals/AddAgentModal";
 
 export default function Home() {
   interface RealEstate {
@@ -248,6 +249,7 @@ export default function Home() {
         resetAll={resetAll}
       />
       <MainCard realEstates={filteredRealEstates} loading={loading} />
+      <AddAgentModal />
     </div>
   );
 }
