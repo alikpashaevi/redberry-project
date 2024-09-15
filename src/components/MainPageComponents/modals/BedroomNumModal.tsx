@@ -53,7 +53,7 @@ export default function BedroomNumModal({
             />
           </div>
             {isInvalid && (
-              <p className="text-red-600 text-sm mt-2">Enter a valid number</p>
+              <p className="text-red-600 text-sm mt-2">შეიყვანეთ ვალიდური მონაცემები</p>
             )}
             </div>
         </div>

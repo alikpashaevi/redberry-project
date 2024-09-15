@@ -42,7 +42,7 @@ export default function Home() {
   const [minArea, setMinArea] = useState<number | null>(null);
   const [maxArea, setMaxArea] = useState<number | null>(null);
   const [bedrooms, setBedrooms] = useState<number | null>(null);
-
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
 
   // Fetch the real estate data from the API
   useEffect(() => {
@@ -132,6 +132,7 @@ export default function Home() {
   // Reset Properties
   const resetBedrooms = () => {
     setBedrooms(null); // Reset the number of bedrooms
+
   };
 
   const resetRegions = () => {
@@ -157,40 +158,45 @@ export default function Home() {
   };
 
   const toggleRegionModal = () => {
-    setIsOpen(!isOpen); // Toggle region modal
-    if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
-    if (isAreaOpen) setIsAreaOpen(false); // Close area modal if it's open
-    if (isBedroomsOpen) setIsBedroomsOpen(false); // Close area modal if it's open
+    setIsOpen(!isOpen);
+    setActiveFilter(isOpen ? null : "region"); // Manage active filter state
+    if (isPriceOpen) setIsPriceOpen(false);
+    if (isAreaOpen) setIsAreaOpen(false);
+    if (isBedroomsOpen) setIsBedroomsOpen(false);
   };
-  
+
   const togglePriceModal = () => {
-    setIsPriceOpen(!isPriceOpen); // Toggle price modal
-    if (isOpen) setIsOpen(false); // Close region modal if it's open
-    if (isAreaOpen) setIsAreaOpen(false); // Close area modal if it's open
-    if (isBedroomsOpen) setIsBedroomsOpen(false); // Close area modal if it's open
+    setIsPriceOpen(!isPriceOpen);
+    setActiveFilter(isPriceOpen ? null : "price");
+    if (isOpen) setIsOpen(false);
+    if (isAreaOpen) setIsAreaOpen(false);
+    if (isBedroomsOpen) setIsBedroomsOpen(false);
   };
 
   const toggleAreaModal = () => {
-    setIsAreaOpen(!isAreaOpen); // Toggle area modal
-    if (isOpen) setIsOpen(false); // Close region modal if it's open
-    if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
-    if (isBedroomsOpen) setIsBedroomsOpen(false); // Close area modal if it's open
+    setIsAreaOpen(!isAreaOpen);
+    setActiveFilter(isAreaOpen ? null : "area");
+    if (isOpen) setIsOpen(false);
+    if (isPriceOpen) setIsPriceOpen(false);
+    if (isBedroomsOpen) setIsBedroomsOpen(false);
   };
 
   const toggleBedroomsModal = () => {
-    setIsBedroomsOpen(!isBedroomsOpen); // Toggle area modal
-    if (isOpen) setIsOpen(false); // Close region modal if it's open
-    if (isPriceOpen) setIsPriceOpen(false); // Close price modal if it's open
-    if (isAreaOpen) setIsAreaOpen(false); // Close area modal if it's open
+    setIsBedroomsOpen(!isBedroomsOpen);
+    setActiveFilter(isBedroomsOpen ? null : "bedrooms");
+    if (isOpen) setIsOpen(false);
+    if (isPriceOpen) setIsPriceOpen(false);
+    if (isAreaOpen) setIsAreaOpen(false);
   };
 
   return (
     <div className="w-[1596px] flex flex-col">
-      <NavBar 
-        toggleRegionModal={toggleRegionModal} 
-        togglePriceModal={togglePriceModal} 
-        toggleAreaModal={toggleAreaModal} 
+      <NavBar
+        toggleRegionModal={toggleRegionModal}
+        togglePriceModal={togglePriceModal}
+        toggleAreaModal={toggleAreaModal}
         toggleBedroomsModal={toggleBedroomsModal}
+        activeFilter={activeFilter} // Pass activeFilter to NavBar
       />
       <RegionModal
         isOpen={isOpen}
@@ -198,35 +204,38 @@ export default function Home() {
         onSelectRegions={handleSelectRegions}
         onClose={toggleRegionModal}
       />
-      <PriceRangeModal 
+      <PriceRangeModal
         isOpen={isPriceOpen}
         onClose={togglePriceModal}
         onSelectPriceRange={(minPrice, maxPrice) => {
           setMinPrice(minPrice);
           setMaxPrice(maxPrice);
-          setIsPriceOpen(false); // Close price modal after applying
+          setIsPriceOpen(false);
         }}
       />
-      <AreaRangeModal 
+      <AreaRangeModal
         isOpen={isAreaOpen}
         onClose={toggleAreaModal}
         onSelectAreaRange={(minArea, maxArea) => {
           setMinArea(minArea);
           setMaxArea(maxArea);
-          setIsAreaOpen(false); // Close area modal after applying
-        }} />
-        <BedroomNumModal
-          isOpen={isBedroomsOpen}
-          onClose={toggleBedroomsModal}
-          onSelectBedroomNum={(bedrooms: number | null) => {
-            setBedrooms(bedrooms);
-            setIsBedroomsOpen(false); // Close area modal after applying
-          }}
-          clearBedroomInput={resetBedrooms}
-        />
-
+          setIsAreaOpen(false);
+        }}
+      />
+      <BedroomNumModal
+        isOpen={isBedroomsOpen}
+        onClose={toggleBedroomsModal}
+        onSelectBedroomNum={(bedrooms: number | null) => {
+          setBedrooms(bedrooms);
+          setIsBedroomsOpen(false);
+          setActiveFilter(null); // Clear the active filter when "არჩევა" is clicked
+        }}
+        clearBedroomInput={resetBedrooms}
+      />
       <Properties
-        selectedRegions={regions.filter((region) => selectedRegionIds.includes(region.id)).map((region) => region.name)} // Pass region names instead of IDs
+        selectedRegions={regions
+          .filter((region) => selectedRegionIds.includes(region.id))
+          .map((region) => region.name)}
         minPrice={minPrice}
         maxPrice={maxPrice}
         minArea={minArea}
@@ -238,10 +247,7 @@ export default function Home() {
         resetArea={resetArea}
         resetAll={resetAll}
       />
-      <MainCard 
-        realEstates={filteredRealEstates} // Pass filtered data
-        loading={loading}
-      />
+      <MainCard realEstates={filteredRealEstates} loading={loading} />
     </div>
   );
 }
