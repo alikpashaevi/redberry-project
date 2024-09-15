@@ -14,8 +14,10 @@ export default function AreaRangeModal({
   const [maxArea, setMaxArea] = useState<number | null>(null);
 
   const applyAreaRange = () => {
-    onSelectAreaRange(minArea, maxArea);
-    onClose(); // Close the modal
+    if (minArea !== null && maxArea !== null && maxArea > minArea) {
+      onSelectAreaRange(minArea, maxArea);
+      onClose(); // Close the modal
+    }
   };
 
   return (

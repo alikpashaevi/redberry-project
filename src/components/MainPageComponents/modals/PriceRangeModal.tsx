@@ -14,8 +14,10 @@ export default function PriceRangeModal({
   const [maxPrice, setMaxPrice] = useState<number | null>(null);
 
   const applyPriceRange = () => {
-    onSelectPriceRange(minPrice, maxPrice);
-    onClose(); // Close the modal
+    if (minPrice !== null && maxPrice !== null && maxPrice > minPrice) {
+      onSelectPriceRange(minPrice, maxPrice);
+      onClose(); // Close the modal
+    }
   };
 
   return (
@@ -25,27 +27,32 @@ export default function PriceRangeModal({
           <h3 className="font-medium text-[16px] text-[#021526] leading-[19.2px]">
             ფასის მიხედვით
           </h3>
-          <div className="flex gap-[15px] w-[325px]">
-            <div className="w-full relative rounded-[6px] pr-[24px]  border-[1px] p-[10px]">
-            <input
-                type="text"
-                className="w-full border-none outline-none"
-                placeholder="დან"
-                value={minPrice || ""}
-                onChange={(e) => setMinPrice(e.target.value ? parseInt(e.target.value) : null)}
-              />
-              <span className="absolute top-[10px] right-[10px]">₾</span>
+          <div className="flex flex-col gap-[8px] w-full">
+            <div className="flex gap-[15px] w-full">
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minPrice !== null && maxPrice !== null && minPrice > maxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+                <input
+                  type="text"
+                  className="w-full border-none outline-none"
+                  placeholder="დან"
+                  value={minPrice || ""}
+                  onChange={(e) => setMinPrice(e.target.value ? parseInt(e.target.value) : null)}
+                />
+                <span className="absolute top-[10px] right-[10px]">₾</span>
+              </div>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minPrice !== null && maxPrice !== null && minPrice > maxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+                <input
+                  type="text"
+                  className="w-full border-none outline-none"
+                  placeholder="მდე"
+                  value={maxPrice || ""}
+                  onChange={(e) => setMaxPrice(e.target.value ? parseInt(e.target.value) : null)}
+                />
+                <span className="absolute top-[10px] right-[10px]">₾</span>
+              </div>
             </div>
-            <div className="w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px]">
-            <input
-                type="text"
-                className="w-full border-none outline-none"
-                placeholder="მდე"
-                value={maxPrice || ""}
-                onChange={(e) => setMaxPrice(e.target.value ? parseInt(e.target.value) : null)}
-              />
-              <span className="absolute top-[10px] right-[10px]">₾</span>
-            </div>
+            {minPrice !== null && maxPrice !== null && minPrice > maxPrice && (
+              <p className="text-red-600 text-[12px] w-full">ჩაწერეთ ვალიდური მონაცემები</p>
+            )}
           </div>
           <div className="w-[334px] flex gap-[24px]">
             <div className="w-full flex flex-col gap-[16px]">

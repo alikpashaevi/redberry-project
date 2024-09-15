@@ -5,26 +5,35 @@ export default function BedroomNumModal({
   isOpen,
   onSelectBedroomNum,
   onClose,
-  clearBedroomInput, // Accept the function to clear the input
+  clearBedroomInput,
 }: {
   isOpen: boolean;
   onSelectBedroomNum: (bedroomNum: number | null) => void;
   onClose: () => void;
-  clearBedroomInput: () => void; // Clear function for resetting input
+  clearBedroomInput: () => void;
 }) {
   const [bedroomNum, setBedroomNum] = useState<number | null>(null);
+  const [isInvalid, setIsInvalid] = useState(false);
 
   const applyBedroomNum = () => {
-    onSelectBedroomNum(bedroomNum);
-    onClose(); // Close the modal
+    if (bedroomNum !== null && bedroomNum >= 0) {
+      onSelectBedroomNum(bedroomNum);
+      onClose();
+    }
   };
 
-  // Effect to clear the bedroom input when the filter is reset
   useEffect(() => {
     if (!bedroomNum) {
       setBedroomNum(null);
+      setIsInvalid(false);
     }
   }, [clearBedroomInput]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value ? parseInt(e.target.value) : null;
+    setBedroomNum(value);
+    setIsInvalid(value !== null && value < 0);
+  };
 
   return (
     <div className={`absolute z-10 bg-white top-[234px] left-[579px] w-[382px] rounded-[10px] border-[1px] border-[#DBDBDB] p-[24px] ${isOpen ? "block" : "hidden"}`}>
@@ -33,17 +42,20 @@ export default function BedroomNumModal({
           <h3 className="font-medium text-[16px] text-[#021526] leading-[19.2px]">
             საძინებლების რაოდენობა
           </h3>
-          <div className="w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px]">
+          <div>
+          <div className={`w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px] ${isInvalid ? 'border-red-600' : ''}`}>
             <input
               type="number"
               className="w-full border-none outline-none"
               placeholder="საძინებლების რაოდენობა"
               value={bedroomNum || ""}
-              onChange={(e) =>
-                setBedroomNum(e.target.value ? parseInt(e.target.value) : null)
-              }
+              onChange={handleInputChange}
             />
           </div>
+            {isInvalid && (
+              <p className="text-red-600 text-sm mt-2">Enter a valid number</p>
+            )}
+            </div>
         </div>
         <div className="w-full flex justify-end">
           <button
