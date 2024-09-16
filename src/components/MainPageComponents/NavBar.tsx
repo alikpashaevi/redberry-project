@@ -68,10 +68,10 @@ export default function NavBar({
         </button>
       </div>
       <div className="flex gap-[16px]">
-        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]">
+        <a href="/add-listing" className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]">
           <FiPlus />
           ლისტინგის დამატება
-        </div>
+        </a>
         <div 
           className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"
           onClick={toggleAgentModal}
