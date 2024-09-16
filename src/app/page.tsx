@@ -35,6 +35,7 @@ export default function Home() {
   const [isPriceOpen, setIsPriceOpen] = useState(false);
   const [isAreaOpen, setIsAreaOpen] = useState(false);
   const [isBedroomsOpen, setIsBedroomsOpen] = useState(false);
+  const [isAgentOpen, setIsAgentOpen] = useState(false);
   const [realEstates, setRealEstates] = useState<RealEstate[]>([]);
   const [filteredRealEstates, setFilteredRealEstates] = useState<RealEstate[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -190,6 +191,10 @@ export default function Home() {
     if (isAreaOpen) setIsAreaOpen(false);
   };
 
+  const toggleAgentModal = () => {
+    setIsAgentOpen(true);
+  }
+
   return (
     <div className="w-[1596px] flex flex-col">
       <NavBar
@@ -197,6 +202,7 @@ export default function Home() {
         togglePriceModal={togglePriceModal}
         toggleAreaModal={toggleAreaModal}
         toggleBedroomsModal={toggleBedroomsModal}
+        toggleAgentModal={toggleAgentModal}
         activeFilter={activeFilter} // Pass activeFilter to NavBar
       />
       <RegionModal
@@ -249,7 +255,10 @@ export default function Home() {
         resetAll={resetAll}
       />
       <MainCard realEstates={filteredRealEstates} loading={loading} />
-      <AddAgentModal />
+      <AddAgentModal 
+        isAgentOpen={isAgentOpen}
+        onClose={() => setIsAgentOpen(false)}
+      />
     </div>
   );
 }

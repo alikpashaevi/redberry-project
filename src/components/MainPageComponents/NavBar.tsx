@@ -7,12 +7,14 @@ export default function NavBar({
   togglePriceModal,
   toggleAreaModal,
   toggleBedroomsModal,
+  toggleAgentModal,
   activeFilter,
 }: {
   toggleRegionModal: () => void;
   togglePriceModal: () => void;
   toggleAreaModal: () => void;
   toggleBedroomsModal: () => void;
+  toggleAgentModal: () => void;
   activeFilter: string | null;
 }) {
   const isActive = (filter: string) => activeFilter === filter;
@@ -70,7 +72,10 @@ export default function NavBar({
           <FiPlus />
           ლისტინგის დამატება
         </div>
-        <div className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white">
+        <div 
+          className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"
+          onClick={toggleAgentModal}
+          >
           <FiPlus />
           აგენტის დამატება
         </div>
