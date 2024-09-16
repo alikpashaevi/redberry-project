@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { FaPlus, FaTrash } from "react-icons/fa6";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export default function AddAgentModal({
   isAgentOpen,
@@ -81,7 +82,8 @@ export default function AddAgentModal({
     }
   };
 
-  const handleRemoveImage = () => {
+  const handleRemoveImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setUploadedImage(null);
   };
 
@@ -186,37 +188,37 @@ export default function AddAgentModal({
               <span className="text-[14px] leading-[16.8px] font-medium">
                 ატვირთეთ ფოტო
               </span>
-              <label htmlFor="fileInput" className={`flex items-center justify-center cursor-pointer border-[1px] ${fileError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
+              <div className={`flex items-center justify-center border-[1px] ${fileError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
                 {uploadedImage ? (
-                  <>
+                  <div className="relative h-[82px] w-[92px] rounded-[8px] ">
                     <img
                       src={uploadedImage}
                       alt="Uploaded"
-                      className="h-full object-contain"
+                      className="h-full w-full object-cover rounded-[8px]"
                     />
                     <button
                       onClick={handleRemoveImage}
-                      className="absolute top-2 right-2 p-1 rounded-full bg-red-500 text-white"
+                      className="z-10 w-[24px] h-[24px] text-[14px] absolute bottom-[-4px] right-[-4px] flex items-center justify-center rounded-full border-[1px] border-[#021526] bg-white text-[#021526]"
                     >
-                      <FaTrash />
+                      <FaRegTrashAlt />
                     </button>
-                  </>
+                  </div>
                 ) : (
-                  <div  className="cursor-pointer">
+                  <label htmlFor="fileInput" className="cursor-pointer w-full h-full flex items-center justify-center">
                     <div className="w-[24px] h-[24px] flex items-center justify-center border border-[#2D3648] rounded-full text-center">
                       <span className="text-[#2D3648] text-[14px] font-bold">
                         <FaPlus />
                       </span>
                     </div>
-                    <input
-                      id="fileInput"
-                      type="file"
-                      className="hidden w-full"
-                      onChange={handleFileChange}
-                    />
-                  </div>
+                  </label>
                 )}
-              </label>
+              </div>
+              <input
+                id="fileInput"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
               {fileError && (
                 <span className="text-red-500 text-sm">{fileError}</span>
               )}
