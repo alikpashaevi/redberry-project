@@ -1,14 +1,33 @@
 import { useState } from "react";
 import { IoCheckmarkSharp } from "react-icons/io5";
-import { FaPlus, FaTrash } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
+import axios from 'axios';
 
 export default function AddAgentModal({
   isAgentOpen,
   onClose,
+  // onAddAgent,
+  // agentname,
+  // agentSurname,
+  // agentEmail,
+  // agentPhone,
+  // agentImage,
 }: {
   isAgentOpen: boolean;
   onClose: () => void;
+  // onAddAgent: (
+  //   name: string,
+  //   surname: string,
+  //   email: string,
+  //   phone: string,
+  //   image: string,
+  // ) => void;
+  // agentname: string;
+  // agentSurname: string;
+  // agentEmail: string;
+  // agentPhone: string;
+  // agentImage: string;
 }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
@@ -24,41 +43,72 @@ export default function AddAgentModal({
 
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [fileError, setFileError] = useState("");
+  
+    const clearInputs = () => {
+      setName("");
+      setSurname("");
+      setEmail("");
+      setPhone("");
+      setUploadedImage(null);
+      setErrors({
+        name: false,
+        surname: false,
+        email: false,
+        phone: false,
+      });
+      setErrorMsg("");
+      setFileError("");
+    };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     const newErrors = {
       name: name.length < 2,
       surname: surname.length < 2,
       email: !email.includes("@redberry.ge"),
       phone: !(phone.startsWith("5") && phone.length === 9 && /^\d+$/.test(phone)),
     };
-  
+    
     setErrors(newErrors);
   
     if (Object.values(newErrors).some((error) => error)) {
       setErrorMsg("შეიყვანეთ ვალიდური მონაცემები");
     } else {
       setErrorMsg("");
-      onClose();
-      clearInputs();
-    }
-  };
+      
+      try {
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('surname', surname);
+        formData.append('email', email);
+        formData.append('phone', phone);
+        
+        if (uploadedImage) {
+          // Convert base64 to blob
+          const response = await fetch(uploadedImage);
+          const blob = await response.blob();
+          formData.append('avatar', blob, 'avatar.jpg');
+        }
 
-  const clearInputs = () => {
-    setName("");
-    setSurname("");
-    setEmail("");
-    setPhone("");
-    setUploadedImage(null);
-    setErrors({
-      name: false,
-      surname: false,
-      email: false,
-      phone: false,
-    });
-    setErrorMsg("");
-    setFileError("");
-  };
+        const response = await axios.post(
+          'https://api.real-estate-manager.redberryinternship.ge/api/agents',
+          formData,
+          {
+            headers: {
+              Authorization: "Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213",
+              'Content-Type': 'multipart/form-data',
+              'accept': 'application/json'
+            }
+          }
+        );
+
+        console.log('Agent added successfully:', response.data);
+        onClose();
+        clearInputs();
+      } catch (error) {
+        console.error('Error adding agent:', error);
+        setErrorMsg("Error adding agent. Please try again.");
+      }
+    }}
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,6 +141,8 @@ export default function AddAgentModal({
     clearInputs();
     onClose();
   };
+
+
 
   return (
     <div
