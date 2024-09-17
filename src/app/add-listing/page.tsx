@@ -5,10 +5,11 @@ import { IoCheckmarkSharp } from 'react-icons/io5';
 export default function ListingPage() {
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
-  const [errors, setErrors] = useState({ name: '', surname: '',area: '', price: '', bedrooms: ''  });
+  const [errors, setErrors] = useState({ name: '', surname: '',area: '', price: '', bedrooms: '', description: '' });
   const [area, setArea] = useState('');
   const [price, setPrice] = useState('');
   const [bedrooms, setBedrooms] = useState('');
+  const [description, setDescription] = useState('');
 
 
   // fetched data from API
@@ -65,7 +66,7 @@ export default function ListingPage() {
   }, [selectedRegion, cities]);
 
   const handleSubmit = () => {
-    let newErrors = { name: '', surname: '', area: '', price: '', bedrooms: '' };
+    let newErrors = { name: '', surname: '', area: '', price: '', bedrooms: '', description: '' };
     let hasErrors = false;
   
     if (name.length < 2) {
@@ -90,6 +91,11 @@ export default function ListingPage() {
   
     if (!/^\d+$/.test(bedrooms)) {
       newErrors.bedrooms = 'მხოლოდ რიცხვები';
+      hasErrors = true;
+    }
+
+    if (description.trim().split(/\s+/).length < 5) {
+      newErrors.description = 'მინიმუმ ხუთი სიტყვა';
       hasErrors = true;
     }
   
@@ -224,26 +230,7 @@ export default function ListingPage() {
             <h3>ბინის დეტალები</h3>
             <div className='flex flex-col gap-[20px]'>
               <div className="flex gap-[30px] w-full">
-                <div className="flex flex-col gap-[4px] w-1/2">
-                  <span className="text-[14px] leading-[16.8px] font-medium">
-                    ფართობი (მ²) *
-                  </span>
-                  <input
-                    className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                      errors.area ? "border-red-500" : "border-[#808A93]"
-                    }`}
-                    type="text"
-                    value={area}
-                    onChange={(e) => setArea(e.target.value)}
-                  />
-                  <div className={`text-[14px] leading-[16.8px] ${errors.area ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    <span >
-                      <IoCheckmarkSharp />
-                    </span>
-                    {errors.area || "მხოლოდ რიცხვები"}
-                  </div>
-                </div>
-                <div className="flex flex-col gap-[4px] w-1/2">
+              <div className="flex flex-col gap-[4px] w-1/2">
                   <span className="text-[14px] leading-[16.8px] font-medium">
                     ფასი *
                   </span>
@@ -262,9 +249,29 @@ export default function ListingPage() {
                     {errors.price || "მხოლოდ რიცხვები"}
                   </div>
                 </div>
+                <div className="flex flex-col gap-[4px] w-1/2">
+                  <span className="text-[14px] leading-[16.8px] font-medium">
+                    ფართობი *
+                  </span>
+                  <input
+                    className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
+                      errors.area ? "border-red-500" : "border-[#808A93]"
+                    }`}
+                    type="text"
+                    value={area}
+                    onChange={(e) => setArea(e.target.value)}
+                  />
+                  <div className={`text-[14px] leading-[16.8px] ${errors.area ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                    <span >
+                      <IoCheckmarkSharp />
+                    </span>
+                    {errors.area || "მხოლოდ რიცხვები"}
+                  </div>
+                </div>
+
               </div>
               <div className="flex gap-[30px] w-full">
-                <div className="flex flex-col gap-[4px] w-1/2">
+                <div className="flex flex-col gap-[4px] w-[380px]">
                   <span className="text-[14px] leading-[16.8px] font-medium">
                     საძინებლების რაოდენობა
                   </span>
@@ -284,7 +291,28 @@ export default function ListingPage() {
                   </div>
                 </div>
               </div>
+              <div className="flex gap-[30px] w-full">
+                <div className="flex flex-col gap-[4px] w-full">
+                  <span className="text-[14px] leading-[16.8px] font-medium">
+                    აღწერა
+                  </span>
+                  <textarea
+                    className={`rounded-[6px] p-[10px] border-[1px] outline-none h-[135px] resize-none ${
+                      errors.description ? "border-red-500" : "border-[#808A93]"
+                    }`}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                  <div className={`text-[14px] leading-[16.8px] ${errors.description ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                    <span>
+                      <IoCheckmarkSharp />
+                    </span>
+                    {errors.description || "მინიმუმ ხუთი სიტყვა"}
+                  </div>
+                </div>
+              </div>
             </div>
+
           </div>
           <div></div>
         </div>
