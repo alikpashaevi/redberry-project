@@ -1,6 +1,8 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
+import { FaPlus } from "react-icons/fa6";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 export default function ListingPage() {
   const [name, setName] = useState('');
@@ -17,6 +19,9 @@ export default function ListingPage() {
   const [cities, setCities] = useState<{ id: number; name: string; region_id: number }[]>([]);;
   const [selectedRegion, setSelectedRegion] = useState<number | null>(null);
   const [filteredCities, setFilteredCities] = useState<{ id: number; name: string; region_id: number }[]>([]);
+
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [fileError, setFileError] = useState("");
 
   useEffect(() => {
     const fetchRegions = async () => {
@@ -104,6 +109,33 @@ export default function ListingPage() {
     if (!hasErrors) {
       console.log('Form submitted successfully');
     }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        setFileError("ფაილი უნდა იყოს სურათი");
+        return;
+      }
+      if (file.size > 1024 * 1024) {
+        setFileError("სურათი უნდა იყოს 1MB-ზე ნაკლები");
+        return;
+      }
+
+      setFileError("");
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setUploadedImage(event.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleRemoveImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setUploadedImage(null);
   };
   
 
@@ -311,8 +343,46 @@ export default function ListingPage() {
                   </div>
                 </div>
               </div>
+              <div className="flex flex-col gap-[4px] w-full">
+                <span className="text-[14px] leading-[16.8px] font-medium">
+                      ატვირთეთ ფოტო *
+                    </span>
+                <div className={`flex items-center justify-center border-[1px] ${fileError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
+                  {uploadedImage ? (
+                    <div className="relative h-[82px] w-[92px] rounded-[8px] ">
+                      <img
+                        src={uploadedImage}
+                        alt="Uploaded"
+                        className="h-full w-full object-cover rounded-[8px]"
+                      />
+                      <button
+                        onClick={handleRemoveImage}
+                        className="z-10 w-[24px] h-[24px] text-[14px] absolute bottom-[-4px] right-[-4px] flex items-center justify-center rounded-full border-[1px] border-[#021526] bg-white text-[#021526]"
+                      >
+                        <FaRegTrashAlt />
+                      </button>
+                    </div>
+                  ) : (
+                    <label htmlFor="fileInput" className="cursor-pointer w-full h-full flex items-center justify-center">
+                      <div className="w-[24px] h-[24px] flex items-center justify-center border border-[#2D3648] rounded-full text-center">
+                        <span className="text-[#2D3648] text-[14px] font-bold">
+                          <FaPlus />
+                        </span>
+                      </div>
+                    </label>
+                  )}
+                </div>
+                <input
+                id="fileInput"
+                type="file"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+              {fileError && (
+                <span className="text-red-500 text-sm">{fileError}</span>
+              )}
+              </div>
             </div>
-
           </div>
           <div></div>
         </div>
@@ -327,7 +397,7 @@ export default function ListingPage() {
                 className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]"
                 onClick={handleSubmit}
               >
-                დაამატე აგენტი
+                დაამატე ლისტინგი
               </button>
             </div>
       </div>
