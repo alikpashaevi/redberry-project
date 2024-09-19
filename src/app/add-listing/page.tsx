@@ -1,17 +1,25 @@
 "use client"
 import { useState, useEffect } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
-import { FaPlus } from "react-icons/fa6";
+import { FaP, FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
+import { IoIosArrowDown } from 'react-icons/io';
+import axios from 'axios';
 
 export default function ListingPage() {
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [errors, setErrors] = useState({ name: '', surname: '',area: '', price: '', bedrooms: '', description: '' });
-  const [area, setArea] = useState('');
-  const [price, setPrice] = useState('');
-  const [bedrooms, setBedrooms] = useState('');
+  const [address, setAddress] = useState('');
+  const [postal, setPostal] = useState('');
+  const [errors, setErrors] = useState({ address: '', postal: '',area: '', price: '', bedrooms: '', description: '' });
+  const [area, setArea] = useState<number | ''>('');
+  const [price, setPrice] = useState<number | ''>('');
+  const [bedrooms, setBedrooms] = useState<number | ''>('');
   const [description, setDescription] = useState('');
+  const [agentNames, setAgentNames] = useState<{id: number; name: string; surname:string; avatar: string}[]>([]);
+
+  //dropdown menu
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState('');
+  const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
 
 
   // fetched data from API
@@ -41,7 +49,7 @@ export default function ListingPage() {
   }, []);
 
   useEffect(() => {
-    const fetchRegions = async () => {
+    const fetchCities = async () => {
       try {
         const response = await fetch("https://api.real-estate-manager.redberryinternship.ge/api/cities", {
           headers: {
@@ -50,67 +58,155 @@ export default function ListingPage() {
         });
         const data = await response.json();
         setCities(data);
-        console.log(data);
+        // console.log(data);
       } catch (error) {
         console.error("Error fetching regions:", error);
       }
     };
-    fetchRegions();
+    fetchCities();
   }, []);
 
+
   useEffect(() => {
-    console.log("Selected Region:", selectedRegion);
+    const fetchAgents = async () => {
+      try {
+        const response = await fetch(
+          'https://api.real-estate-manager.redberryinternship.ge/api/agents',
+          {
+            headers: {
+              Authorization: 'Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213',
+            },
+          }
+        );
+        const data = await response.json();
+        // console.log('agent object: ', data);
+        setAgentNames(data);
+      } catch (error) {
+        console.error('Error fetching agents:', error);
+      }
+    };
+    fetchAgents();
+  }, []);
+
+  // Log agentNames when they are updated
+  useEffect(() => {
+    console.log('Updated agent names:', agentNames);
+  }, [agentNames]);
+
+  useEffect(() => {
+    // console.log("Selected Region:", selectedRegion);
     
     if (selectedRegion) {
       const filtered = cities.filter(city => city.region_id === selectedRegion);
       setFilteredCities(filtered);
-      console.log("Filtered Cities:", filtered);
+      // console.log("Filtered Cities:", filtered);
     } else {
       setFilteredCities([]);
     }
   }, [selectedRegion, cities]);
 
-  const handleSubmit = () => {
-    let newErrors = { name: '', surname: '', area: '', price: '', bedrooms: '', description: '' };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    let newErrors = { address: '', postal: '', area: '', price: '', bedrooms: '', description: '' };
     let hasErrors = false;
-  
-    if (name.length < 2) {
-      newErrors.name = 'მინიმუმ ორი სიმბოლო';
+
+    if (address.length < 2) {
+      newErrors.address = 'მინიმუმ ორი სიმბოლო';
       hasErrors = true;
     }
-  
-    if (!/^\d+$/.test(surname)) {
-      newErrors.surname = 'მხოლოდ რიცხვები';
+
+    if (!/^\d+$/.test(postal)) {
+      newErrors.postal = 'მხოლოდ რიცხვები';
       hasErrors = true;
     }
-  
-    if (!/^\d+$/.test(area)) {
-      newErrors.area = 'მხოლოდ რიცხვები';
-      hasErrors = true;
-    }
-  
-    if (!/^\d+$/.test(price)) {
-      newErrors.price = 'მხოლოდ რიცხვები';
-      hasErrors = true;
-    }
-  
-    if (!/^\d+$/.test(bedrooms)) {
-      newErrors.bedrooms = 'მხოლოდ რიცხვები';
-      hasErrors = true;
-    }
+
+    // if (!/^\d+$/.test(area)) {
+    //   newErrors.area = 'მხოლოდ რიცხვები';
+    //   hasErrors = true;
+    // }
+
+    // if (!/^\d+$/.test(price)) {
+    //   newErrors.price = 'მხოლოდ რიცხვები';
+    //   hasErrors = true;
+    // }
+
+    // if (!/^\d+$/.test(bedrooms)) {
+    //   newErrors.bedrooms = 'მხოლოდ რიცხვები';
+    //   hasErrors = true;
+    // }
 
     if (description.trim().split(/\s+/).length < 5) {
       newErrors.description = 'მინიმუმ ხუთი სიტყვა';
       hasErrors = true;
     }
-  
+
     setErrors(newErrors);
-  
+
     if (!hasErrors) {
-      console.log('Form submitted successfully');
+      try {
+        const formData = new FormData();
+        formData.append('is_rental', (document.querySelector('input[name="rentOrSale"]:checked') as HTMLInputElement)?.value === '1' ? '1' : '0');
+        formData.append('address', address);
+        formData.append('zip_code', postal);
+        formData.append('region_id', selectedRegion?.toString() || '');
+        formData.append('city_id', (document.getElementById('cities') as HTMLSelectElement).value);
+        formData.append('price', price.toString());
+        formData.append('area', area.toString());
+        formData.append('bedrooms', bedrooms.toString());
+        formData.append('description', description);
+        formData.append('agent_id', selectedAgentId !== null ? selectedAgentId.toString() : '0');
+
+        console.log('is_rental:', (document.querySelector('input[name="rentOrSale"]:checked') as HTMLInputElement)?.value || '');
+        console.log('address:', address);
+        console.log('zip_code:', postal);
+        console.log('region_id:', selectedRegion?.toString() || '');
+        console.log('city_id:', (document.getElementById('cities') as HTMLSelectElement).value);
+        console.log('price:', price);
+        console.log('area:', area);
+        console.log('bedrooms:', bedrooms);
+        console.log('description:', description);
+        console.log('agent_id:', selectedAgentId);
+      
+        console.log('is_rental type:', typeof ((document.querySelector('input[name="rentOrSale"]:checked') as HTMLInputElement)?.value || ''));
+        console.log('address type:', typeof address);
+        console.log('zip_code type:', typeof postal);
+        console.log('region_id type:', typeof (selectedRegion?.toString() || ''));
+        console.log('city_id type:', typeof (parseInt((document.getElementById('cities') as HTMLSelectElement).value)));
+        console.log('price type:', typeof price);
+        console.log('area type:', typeof area);
+        console.log('bedrooms type:', typeof bedrooms);
+        console.log('description type:', typeof description);
+        console.log('agent_id type:', typeof selectedAgentId);
+
+        // Append the image file if it exists
+        if (uploadedImage) {
+          // Convert base64 to blob
+          const response = await fetch(uploadedImage);
+          const blob = await response.blob();
+          formData.append('image', blob, 'avatar.jpg');
+        }
+
+        const response = await axios.post(
+          'https://api.real-estate-manager.redberryinternship.ge/api/real-estates',
+          formData,
+          {
+            headers: {
+              Authorization: "Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213",
+              'Content-Type': 'multipart/form-data',
+              'accept': 'application/json'
+            }
+          }
+        );
+
+        console.log('API Response:', response.data);
+        // Handle successful submission (e.g., show success message, redirect, etc.)
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        // Handle error (e.g., show error message to user)
+      }
+      window.location.href = '/';
     }
   };
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -138,6 +234,20 @@ export default function ListingPage() {
     setUploadedImage(null);
   };
   
+  // {agentNames.map((agent, index) => (
+  //   <div
+  //     key={index}
+  //     className={`p-[10px] cursor-pointer hover:bg-gray-100 ${
+  //       index !== agentNames.length - 1 ? 'border-b-[1px] border-[#808A93]' : ''
+  //     }`}
+  //     onClick={() => {
+  //       setSelectedAgent(agent);
+  //       setIsDropdownOpen(false);
+  //     }}
+  //   >
+  //     {agent}
+  //   </div>
+  // ))}
 
   return (
     <div className="w-full flex justify-center items-center">
@@ -145,6 +255,7 @@ export default function ListingPage() {
         <div className='mb-[61px]'>
           <h3 className="text-center font-medium text-[32px] leading-[38.4px] text-[#021526]">ლისტინგის დამატება</h3>
         </div>
+        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-[40px]">
         <div className='w-full flex flex-col gap-[80px]'>
           <div className='flex flex-col gap-[10px]'>
             <h3 className='font-medium text-[16px] leading-[19.5px] text-[#1A1A1F]'>გარიგების ტიპი</h3>
@@ -153,7 +264,7 @@ export default function ListingPage() {
                 <input 
                   type="radio" 
                   name="rentOrSale" 
-                  value={'sale'} 
+                  value={0} 
                   id="saleInput" 
                   defaultChecked
                   className="w-[17px] h-[17px] appearance-none border-[1px] border-black rounded-full checked:bg-white checked:border-[#021526] grid place-content-center before:content-[''] before:w-[7px] before:h-[7px] before:rounded-full before:bg-[#021526] before:opacity-0 checked:before:opacity-100 transition-all"
@@ -164,7 +275,7 @@ export default function ListingPage() {
                 <input 
                   type="radio" 
                   name="rentOrSale" 
-                  value={'rent'} 
+                  value={1} 
                   id="rentInput" 
                   className="w-[17px] h-[17px] appearance-none border-[1px] border-black rounded-full checked:bg-white checked:border-[#021526] grid place-content-center before:content-[''] before:w-[7px] before:h-[7px] before:rounded-full before:bg-[#021526] before:opacity-0 checked:before:opacity-100 transition-all"
                 />
@@ -182,17 +293,17 @@ export default function ListingPage() {
                   </span>
                   <input
                     className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                      errors.name ? "border-red-500" : "border-[#808A93]"
+                      errors.address ? "border-red-500" : "border-[#808A93]"
                     }`}
                     type="text"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
                   />
-                  <div className={`text-[14px] leading-[16.8px] ${errors.name ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                  <div className={`text-[14px] leading-[16.8px] ${errors.address ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
                       <IoCheckmarkSharp />
                     </span>
-                    {errors.name || "მინიმუმ ორი სიმბოლო"}
+                    {errors.address || "მინიმუმ ორი სიმბოლო"}
                   </div>
                 </div>
                 <div className="flex flex-col gap-[4px] w-1/2">
@@ -201,17 +312,17 @@ export default function ListingPage() {
                   </span>
                   <input
                     className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                      errors.surname ? "border-red-500" : "border-[#808A93]"
+                      errors.postal ? "border-red-500" : "border-[#808A93]"
                     }`}
                     type="text"
-                    value={surname}
-                    onChange={(e) => setSurname(e.target.value)}
+                    value={postal}
+                    onChange={(e) => setPostal(e.target.value)}
                   />
-                  <div className={`text-[14px] leading-[16.8px] ${errors.surname ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                  <div className={`text-[14px] leading-[16.8px] ${errors.postal ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
                       <IoCheckmarkSharp />
                     </span>
-                    {errors.surname || "მხოლოდ რიცხვები"}
+                    {errors.postal || "მხოლოდ რიცხვები"}
                   </div>
                 </div>
               </div>
@@ -272,7 +383,7 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={price}
-                    onChange={(e) => setPrice(e.target.value)}
+                    onChange={(e) => setPrice(parseInt(e.target.value))}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.price ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
@@ -291,7 +402,7 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={area}
-                    onChange={(e) => setArea(e.target.value)}
+                    onChange={(e) => setArea(parseInt(e.target.value))}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.area ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span >
@@ -313,7 +424,7 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={bedrooms}
-                    onChange={(e) => setBedrooms(e.target.value)}
+                    onChange={(e) => setBedrooms(parseInt(e.target.value))}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.bedrooms ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
@@ -377,29 +488,63 @@ export default function ListingPage() {
                 type="file"
                 className="hidden"
                 onChange={handleFileChange}
-              />
-              {fileError && (
-                <span className="text-red-500 text-sm">{fileError}</span>
-              )}
+                />
+                {fileError && (
+                  <span className="text-red-500 text-sm">{fileError}</span>
+                )}
               </div>
             </div>
           </div>
-          <div></div>
+          <div className='mb-[80px]'>
+            {/* ---------the agent dropdown menu------- */}
+            <div className="relative w-[384px] font-normal">
+              <div
+                className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              >
+                {selectedAgent || 'აირჩიე'} 
+                <IoIosArrowDown />
+              </div>
+              {isDropdownOpen && (
+                <div className="absolute z-10 w-full mt-0 bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
+                  <button className="flex items-center gap-[10px] w-full p-[10px] text-left hover:bg-gray-100 border-b-[1px] border-[#808A93]">
+                    <span className='border-[1px] border-[#021526] rounded-full text-[#021526] text-[11px] p-[3px]'><FaPlus /></span> დაამატე აგენტი
+                  </button>
+                  {agentNames.map((agent, index) => (
+                    <div
+                      key={agent.id}
+                      className={`p-[10px] cursor-pointer hover:bg-gray-100 ${
+                        index !== agentNames.length - 1 ? 'border-b-[1px] border-[#808A93]' : ''
+                      }`}
+                      onClick={() => {
+                        setSelectedAgentId(agent.id);
+                        setSelectedAgent(`${agent.name} ${agent.surname}`);
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      {`${agent.name} ${agent.surname}`}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+        </div>
         </div>
         <div className="flex justify-end w-full gap-[10px]">
-              <a
-                className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"
-                href="/"
-              >
-                გაუქმება
-              </a>
-              <button
-                className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]"
-                onClick={handleSubmit}
-              >
-                დაამატე ლისტინგი
-              </button>
-            </div>
+          <a
+            className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"
+            href="/"
+          >
+            გაუქმება
+          </a>
+          <button
+            className="flex gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]"
+            onClick={handleSubmit}
+          >
+            დაამატე ლისტინგი
+          </button>
+        </div>
+        </form>
       </div>
     </div>
   );
