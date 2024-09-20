@@ -16,7 +16,7 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
     image: string,
     is_rent: number,
     description: string,
-    city: {id: number, name: string, region_id: {name: string}},
+    city: {id: number, name: string, region: {name: string}},
     agent: {name: string, surname: string, phone: string, email: string; avatar: string},
     created_at: string,
   }
@@ -88,7 +88,8 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
         
         // Fetch related real estates after getting the current card info
         
-        fetchRelatedRealEstates(data.city.region_id.name);
+        fetchRelatedRealEstates(data.city.region.name);
+        console.log(data.city.region.name);
         
       } catch (error) {
         console.error("Error fetching real estate data:", error);
@@ -109,10 +110,11 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
           cardInfoProps={cardInfoProps}
           loading={loading}
         />
-        <MainCard 
+         
+{/*     <MainCard 
           realEstates={relatedRealEstates}
           loading={loading}
-        />
+        /> */}
         </div>
       ) : (
         <div>Loading...</div>
