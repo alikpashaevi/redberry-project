@@ -25,9 +25,10 @@ interface CardInfoProps {
 interface CardIdPage {
   cardInfoProps: CardInfoProps,
   loading: boolean,
+  deleteModal:() => void;
 }
 
-export default function CardInfo ( {cardInfoProps, loading,}: CardIdPage) {
+export default function CardInfo ( {cardInfoProps, loading, deleteModal}: CardIdPage) {
   if (loading) {
     return <div className="absolute translate-x-50 translate-y-50">Loading...</div>;
   }
@@ -94,7 +95,9 @@ export default function CardInfo ( {cardInfoProps, loading,}: CardIdPage) {
               </div>
             </div>
             <div >
-              <button className='p-[10px] border border-[#676E76] rounded-[8px] text-[12px] leading-[14.4px] font-medium'>ლისტინგის წაშლა</button>
+              <button className='p-[10px] border border-[#676E76] rounded-[8px] text-[12px] leading-[14.4px] font-medium'
+                onClick={deleteModal}
+              >ლისტინგის წაშლა</button>
             </div>
           </div>
         </div>

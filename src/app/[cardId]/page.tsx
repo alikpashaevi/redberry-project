@@ -1,5 +1,6 @@
 "use client"
 import CardInfo from "@/components/CardPageComponents/CardInfo";
+import DeleteModal from "@/components/CardPageComponents/DeleteModal";
 import Loading from "@/components/Loading";
 import MainCard from "@/components/MainPageComponents/MainCard";
 import { useEffect, useState } from "react";
@@ -46,6 +47,12 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
   const [relatedRealEstates, setRelatedRealEstates] = useState<RealEstate[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
+
+  const [deleteModal, setDeleteModal] = useState(false);
+
+  const toggleDeleteModal = () => {
+    setDeleteModal(!deleteModal);
+  };
 
   // const [currentSlide, setCurrentSlide] = useState(0);
 
@@ -113,7 +120,31 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
     fetchData();
   }, []);
 
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(
+        `https://api.real-estate-manager.redberryinternship.ge/api/real-estates/${params.cardId}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: 'Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213',
+          },
+        }
+      );
   
+      if (response.ok) {
+        // Item deleted successfully
+        toggleDeleteModal(); // Close the modal
+        // Redirect to the home page or show a success message
+        window.location.href = '/';
+      } else {
+        // Handle error
+        console.error('Failed to delete item');
+      }
+    } catch (error) {
+      console.error('Error deleting item:', error);
+    }
+  };
 
   return (
     <div>
@@ -127,6 +158,7 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
           <CardInfo 
             cardInfoProps={cardInfoProps}
             loading={loading}
+            deleteModal={toggleDeleteModal}
           />
         <div className="flex w-[1591px] items-start">
           <h1 className="font-medium text-[32px] leading-[38.4px] mt-[53px] text-start">ბინები მსგავს ლოკაციაზე</h1>
@@ -143,6 +175,11 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
           {/* <span className="absolute top-[190px] right-[-45px] text-[30px] cursor-pointer">
             <FiArrowRight />
           </span > */}
+          <DeleteModal 
+            isOpen={deleteModal}
+            onClose={toggleDeleteModal}
+            onDelete={handleDelete}
+          />
         </div>
         </div>
       ) : (
