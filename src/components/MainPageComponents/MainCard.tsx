@@ -39,7 +39,7 @@ export default function MainCard({ realEstates, loading }: MainCardProps) {
         <div>No properties found for the selected region.</div>
       ) : (
         realEstates.map((estate) => (
-          <div key={estate.id} className="flex flex-col w-[384px] rounded-[14px] overflow-hidden relative">
+          <a href={`/${estate.id}`} key={estate.id} className="flex flex-col w-[384px] rounded-[14px] overflow-hidden relative">
             {estate.is_rental ? (
               <span className="absolute w-[90px] p-[6px] rounded-[26px] top-[10px] left-[10px] bg-[#02152680] font-medium text-[12px] leading-[14.4px] text-center text-white tracking-wider">ქირავდება</span>
             ) : (
@@ -67,7 +67,7 @@ export default function MainCard({ realEstates, loading }: MainCardProps) {
                 </div>
               </div>
             </div>
-          </div>
+          </a>
         ))
       )}
     </div>

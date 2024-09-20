@@ -5,6 +5,7 @@ import { FaP, FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { IoIosArrowDown } from 'react-icons/io';
 import axios from 'axios';
+import AddAgentModal from '@/components/MainPageComponents/modals/AddAgentModal';
 
 export default function ListingPage() {
   const [address, setAddress] = useState('');
@@ -20,7 +21,7 @@ export default function ListingPage() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedAgent, setSelectedAgent] = useState('');
   const [selectedAgentId, setSelectedAgentId] = useState<number | null>(null);
-
+  const [isAgentOpen, setIsAgentOpen] = useState(false);
 
   // fetched data from API
   const [regions, setRegions] = useState<{ id: number; name: string }[]>([]);
@@ -233,6 +234,10 @@ export default function ListingPage() {
     e.stopPropagation();
     setUploadedImage(null);
   };
+
+  const toggleAgentModal = () => {
+    setIsAgentOpen(true);
+  }
   
   // {agentNames.map((agent, index) => (
   //   <div
@@ -497,7 +502,7 @@ export default function ListingPage() {
           </div>
           <div className='mb-[80px]'>
             {/* ---------the agent dropdown menu------- */}
-            <div className="relative w-[384px] font-normal">
+            <div className="relative w-[384px] font-normal select-none">
               <div
                 className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -507,7 +512,10 @@ export default function ListingPage() {
               </div>
               {isDropdownOpen && (
                 <div className="absolute z-10 w-full mt-0 bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
-                  <button className="flex items-center gap-[10px] w-full p-[10px] text-left hover:bg-gray-100 border-b-[1px] border-[#808A93]">
+                  <button
+                   className="flex items-center gap-[10px] w-full p-[10px] text-left hover:bg-gray-100 border-b-[1px] border-[#808A93]"
+                   onClick={toggleAgentModal}
+                   >
                     <span className='border-[1px] border-[#021526] rounded-full text-[#021526] text-[11px] p-[3px]'><FaPlus /></span> დაამატე აგენტი
                   </button>
                   {agentNames.map((agent, index) => (
@@ -546,6 +554,10 @@ export default function ListingPage() {
         </div>
         </form>
       </div>
+      <AddAgentModal 
+        isAgentOpen={isAgentOpen}
+        onClose={() => setIsAgentOpen(false)}
+      />
     </div>
   );
 }
