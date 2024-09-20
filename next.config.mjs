@@ -8,6 +8,6 @@ const nextConfig = {  images: {
       pathname: '/storage/images/**',
     },
   ],
-},};
+},reactStrictMode: false};
 
 export default nextConfig;

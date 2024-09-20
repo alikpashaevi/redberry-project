@@ -32,6 +32,11 @@ export default function ListingPage() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [fileError, setFileError] = useState("");
 
+  const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
+  const [selectedCityName, setSelectedCityName] = useState('');
+  const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
+const [selectedRegionName, setSelectedRegionName] = useState('');
+
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -332,44 +337,63 @@ export default function ListingPage() {
                 </div>
               </div>
               <div className="flex gap-[30px] w-full">
-                <div className="flex flex-col gap-[4px] w-1/2">
+                <div className="flex flex-col gap-[4px] w-1/2 relative">
                   <span className="text-[14px] leading-[16.8px] font-medium">
                     რეგიონი
                   </span>
-                  <select 
-                    id="regions" 
-                    name="regions" 
-                    className="rounded-[6px] p-[10px] border-[1px] outline-none border-[#808A93]"
-                    onChange={(e) => setSelectedRegion(Number(e.target.value))}
-                    defaultValue=""
+                  <div
+                    className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isRegionDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
+                    onClick={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}
                   >
-                    <option value="" hidden disabled>არჩევა</option>
-                    {regions.map((region) => (
-                      <option key={region.id} value={region.id}>
-                        {region.name}
-                      </option>
-                    ))}
-                  </select>
-
+                    {selectedRegionName || 'არჩევა'} 
+                    <IoIosArrowDown />
+                  </div>
+                  {isRegionDropdownOpen && (
+                    <div className="absolute z-10 w-full mt-[66px] bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
+                      {regions.map((region) => (
+                        <div
+                          key={region.id}
+                          className="p-[10px] cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setSelectedRegion(region.id);
+                            setSelectedRegionName(region.name);
+                            setIsRegionDropdownOpen(false);
+                          }}
+                        >
+                          {region.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-                <div className="flex flex-col gap-[4px] w-1/2">
+                <div className="flex flex-col gap-[4px] w-1/2 relative">
                   <span className="text-[14px] leading-[16.8px] font-medium">
                     ქალაქი
                   </span>
-                  <select 
-                    id="cities" 
-                    name="cities" 
-                    className="rounded-[6px] p-[10px] border-[1px] outline-none border-[#808A93]"
-                    disabled={!selectedRegion}
-                    defaultValue=""
+                  <div
+                    className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isCityDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer ${!selectedRegion ? 'opacity-50' : ''}`}
+                    onClick={() => selectedRegion && setIsCityDropdownOpen(!isCityDropdownOpen)}
                   >
-                    <option value="" hidden disabled>არჩევა</option>
-                    {filteredCities.map((city) => (
-                      <option key={city.id} value={city.id}>
-                        {city.name}
-                      </option>
-                    ))}
-                  </select>
+                    {selectedCityName || 'არჩევა'} 
+                    <IoIosArrowDown />
+                  </div>
+                  {isCityDropdownOpen && (
+                    <div className="absolute z-10 w-full mt-[66px] bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
+                      {filteredCities.map((city) => (
+                        <div
+                          key={city.id}
+                          className="p-[10px] cursor-pointer hover:bg-gray-100"
+                          onClick={() => {
+                            setSelectedCityName(city.name);
+                            setIsCityDropdownOpen(false);
+                            // You might want to store the selected city ID as well
+                          }}
+                        >
+                          {city.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

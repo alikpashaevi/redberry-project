@@ -99,19 +99,20 @@ export default function Home() {
   }, []);
 
   // Handle region selection from modal
-  // useEffect(() => {
-  //   const savedFilters = localStorage.getItem('filterValues');
-  //   if (savedFilters) {
-  //     const { selectedRegionIds, minPrice, maxPrice, minArea, maxArea, bedrooms } = JSON.parse(savedFilters);
-  
-  //     setSelectedRegionIds(selectedRegionIds || []);
-  //     setMinPrice(minPrice !== null ? minPrice : null);
-  //     setMaxPrice(maxPrice !== null ? maxPrice : null);
-  //     setMinArea(minArea !== null ? minArea : null);
-  //     setMaxArea(maxArea !== null ? maxArea : null);
-  //     setBedrooms(bedrooms !== null ? bedrooms : null);
-  //   }
-  // }, []); // Empty dependency array ensures this runs only on mount
+  useEffect(() => {
+    console.log("here 2")
+    const savedFilters = localStorage.getItem('filterValues');
+    if (savedFilters) {
+      const { selectedRegionIds, minPrice, maxPrice, minArea, maxArea, bedrooms } = JSON.parse(savedFilters);
+      console.log(selectedRegionIds)
+      setSelectedRegionIds(selectedRegionIds || []);
+      setMinPrice(minPrice !== null ? minPrice : null);
+      setMaxPrice(maxPrice !== null ? maxPrice : null);
+      setMinArea(minArea !== null ? minArea : null);
+      setMaxArea(maxArea !== null ? maxArea : null);
+      setBedrooms(bedrooms !== null ? bedrooms : null);
+    }
+  }, []); // Empty dependency array ensures this runs only on mount
 
   // Handle region selection from modal
   const handleSelectRegions = (selectedIds: number[]) => {
@@ -120,6 +121,7 @@ export default function Home() {
 
   // Filter real estate data based on selected region names
   useEffect(() => {
+    console.log("here 1")
     let filtered = realEstates;
   
     // Filter by selected regions
@@ -152,18 +154,19 @@ export default function Home() {
       filtered = filtered.filter((estate) => estate.bedrooms === bedrooms);
     }
 
-    // localStorage.setItem('filteredRealEstates', JSON.stringify(filtered));
+    localStorage.setItem('filteredRealEstates', JSON.stringify(filtered));
 
     // Save the selected filter values to localStorage
-    // const filterValues = {
-    //   selectedRegionIds,
-    //   minPrice,
-    //   maxPrice,
-    //   minArea,
-    //   maxArea,
-    //   bedrooms
-    // };
-    // localStorage.setItem('filterValues', JSON.stringify(filterValues));
+    const filterValues = {
+      selectedRegionIds,
+      minPrice,
+      maxPrice,
+      minArea,
+      maxArea,
+      bedrooms
+    };
+    console.log(filterValues);
+    localStorage.setItem('filterValues', JSON.stringify(filterValues));
   
     setFilteredRealEstates(filtered);
   }, [selectedRegionIds, regions, realEstates, minPrice, maxPrice, minArea, maxArea, bedrooms]);
@@ -210,6 +213,7 @@ export default function Home() {
       bedrooms: null
     };
     const updatedFilters = { ...currentFilters, ...updates };
+    console.log('loginsdkf')
     localStorage.setItem('filterValues', JSON.stringify(updatedFilters));
   };
 
