@@ -3,6 +3,8 @@ import CardInfo from "@/components/CardPageComponents/CardInfo";
 import MainCard from "@/components/MainPageComponents/MainCard";
 import { useEffect, useState } from "react";
 
+//icons
+import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 
 export default function cardMainPage ({ params }: { params: { cardId: number} }) {
 
@@ -44,6 +46,16 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
 
   const [loading, setLoading] = useState<boolean>(true);
 
+  // const [currentSlide, setCurrentSlide] = useState(0);
+
+  // const nextSlide = () => {
+  //   setCurrentSlide((prev) => (prev + 1) % Math.ceil(relatedRealEstates.length / 4));
+  // };
+
+  // const prevSlide = () => {
+  //   setCurrentSlide((prev) => (prev - 1 + Math.ceil(relatedRealEstates.length / 4)) % Math.ceil(relatedRealEstates.length / 4));
+  // };
+
   const fetchRelatedRealEstates = async (regionName: string) => {
     try {
       const response = await fetch(
@@ -59,9 +71,9 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
       console.log(data);
       const filteredEstates = data.filter(
         (realEstate: RealEstate) => 
-          realEstate.city.region.name === regionName && 
-          realEstate.id !== params.cardId
+          realEstate.city.region.name === regionName && realEstate.id != params.cardId
       );
+      // console.log(params.cardId)
       setRelatedRealEstates(filteredEstates);
       console.log(filteredEstates);
     } catch (error) {
@@ -105,16 +117,32 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
   return (
     <div>
       {cardInfoProps && !loading ? (
-        <div>
-        <CardInfo 
-          cardInfoProps={cardInfoProps}
-          loading={loading}
-        />
-         
-{/*     <MainCard 
-          realEstates={relatedRealEstates}
-          loading={loading}
-        /> */}
+        <div className="flex flex-col items-center w-full justify-center pt-[64px]">
+          <div className="flex w-[1591px] items-start">
+            <a href='/' className="p-[6px] text-[32px] mb-[29px] hover:bg-[#dbdbdb] rounded-[50%]">
+              <FiArrowLeft />
+            </a>
+          </div>
+          <CardInfo 
+            cardInfoProps={cardInfoProps}
+            loading={loading}
+          />
+        <div className="flex w-[1591px] items-start">
+          <h1 className="font-medium text-[32px] leading-[38.4px] mt-[53px] text-start">ბინები მსგავს ლოკაციაზე</h1>
+        </div>
+        <div className="relative mt-[52px] w-[1591px] ">
+          {/* <span className="absolute top-[190px] left-[-52px] text-[30px] cursor-pointer">
+            <FiArrowLeft />
+          </span> */}
+          <MainCard 
+            realEstates={relatedRealEstates}
+            loading={loading}
+            asSlider={true}
+          />
+          {/* <span className="absolute top-[190px] right-[-45px] text-[30px] cursor-pointer">
+            <FiArrowRight />
+          </span > */}
+        </div>
         </div>
       ) : (
         <div>Loading...</div>

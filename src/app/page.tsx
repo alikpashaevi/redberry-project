@@ -254,7 +254,9 @@ export default function Home() {
         resetArea={resetArea}
         resetAll={resetAll}
       />
-      <MainCard realEstates={filteredRealEstates} loading={loading} />
+      <div className="absolute top-[301px] left-[162px]">
+        <MainCard realEstates={filteredRealEstates} loading={loading} asSlider={false} />
+      </div>
       <AddAgentModal 
         isAgentOpen={isAgentOpen}
         onClose={() => setIsAgentOpen(false)}
