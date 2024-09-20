@@ -11,6 +11,7 @@ import bedIcon from "../../public/icons/bed.png";
 import locationIcon from "../../public/icons/location-marker.png";
 import { useState } from 'react';
 import { div } from "framer-motion/client";
+import Loading from "../Loading";
 
 // Define the data type for real estate data
 interface RealEstate {
@@ -34,7 +35,9 @@ interface MainCardProps {
 export default function MainCard({ realEstates, loading,asSlider }: MainCardProps) {
   // If loading, show a loader
   if (loading) {
-    return <div className="absolute translate-x-50 translate-y-50">Loading...</div>;
+    return <div className="w-[1591px] h-[500px] flex items-center justify-center ">
+      <Loading />
+    </div>;
   }
   const [currentIndex, setCurrentIndex] = useState(0);
   const handleNext = () => {

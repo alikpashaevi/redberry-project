@@ -1,5 +1,6 @@
 "use client"
 import CardInfo from "@/components/CardPageComponents/CardInfo";
+import Loading from "@/components/Loading";
 import MainCard from "@/components/MainPageComponents/MainCard";
 import { useEffect, useState } from "react";
 
@@ -145,7 +146,9 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
         </div>
         </div>
       ) : (
-        <div>Loading...</div>
+        <div className="w-full h-[85vh] flex justify-center items-center">
+          <Loading />
+        </div>
       )}
     </div>
   );

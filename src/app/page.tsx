@@ -28,6 +28,15 @@ export default function Home() {
     is_rental: number;
     name: string; 
   }
+
+  interface FilterValues {
+    selectedRegionIds: number[];
+    minPrice: number | null;
+    maxPrice: number | null;
+    minArea: number | null;
+    maxArea: number | null;
+    bedrooms: number | null;
+  }
   
   const [regions, setRegions] = useState<{ id: number, name: string }[]>([]); 
   const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([]); // Still track IDs here
@@ -90,8 +99,23 @@ export default function Home() {
   }, []);
 
   // Handle region selection from modal
+  // useEffect(() => {
+  //   const savedFilters = localStorage.getItem('filterValues');
+  //   if (savedFilters) {
+  //     const { selectedRegionIds, minPrice, maxPrice, minArea, maxArea, bedrooms } = JSON.parse(savedFilters);
+  
+  //     setSelectedRegionIds(selectedRegionIds || []);
+  //     setMinPrice(minPrice !== null ? minPrice : null);
+  //     setMaxPrice(maxPrice !== null ? maxPrice : null);
+  //     setMinArea(minArea !== null ? minArea : null);
+  //     setMaxArea(maxArea !== null ? maxArea : null);
+  //     setBedrooms(bedrooms !== null ? bedrooms : null);
+  //   }
+  // }, []); // Empty dependency array ensures this runs only on mount
+
+  // Handle region selection from modal
   const handleSelectRegions = (selectedIds: number[]) => {
-    setSelectedRegionIds(selectedIds); // Store selected region IDs
+    setSelectedRegionIds(selectedIds); 
   };
 
   // Filter real estate data based on selected region names
@@ -127,36 +151,66 @@ export default function Home() {
     if (bedrooms !== null) {
       filtered = filtered.filter((estate) => estate.bedrooms === bedrooms);
     }
+
+    // localStorage.setItem('filteredRealEstates', JSON.stringify(filtered));
+
+    // Save the selected filter values to localStorage
+    // const filterValues = {
+    //   selectedRegionIds,
+    //   minPrice,
+    //   maxPrice,
+    //   minArea,
+    //   maxArea,
+    //   bedrooms
+    // };
+    // localStorage.setItem('filterValues', JSON.stringify(filterValues));
   
     setFilteredRealEstates(filtered);
   }, [selectedRegionIds, regions, realEstates, minPrice, maxPrice, minArea, maxArea, bedrooms]);
 
   // Reset Properties
   const resetBedrooms = () => {
-    setBedrooms(null); // Reset the number of bedrooms
-
+    setBedrooms(null);
+    updateLocalStorage({ bedrooms: null });
   };
 
   const resetRegions = () => {
-    setSelectedRegionIds([]); // Reset the selected region IDs
+    setSelectedRegionIds([]);
+    updateLocalStorage({ selectedRegionIds: [] });
   };
 
   const resetPrice = () => {
-    setMinPrice(null); // Reset the minimum price
-    setMaxPrice(null); // Reset the maximum price
+    setMinPrice(null);
+    setMaxPrice(null);
+    updateLocalStorage({ minPrice: null, maxPrice: null });
   };
 
   const resetArea = () => {
-    setMinArea(null); // Reset the minimum area
-    setMaxArea(null); // Reset the maximum area
+    setMinArea(null);
+    setMaxArea(null);
+    updateLocalStorage({ minArea: null, maxArea: null });
   };
-
 
   const resetAll = () => {
     resetRegions();
     resetBedrooms();
     resetPrice();
     resetArea();
+  };
+
+  // Helper function to update localStorage
+  const updateLocalStorage = (updates: Partial<FilterValues>) => {
+    const savedFilters = localStorage.getItem('filterValues');
+    const currentFilters: FilterValues = savedFilters ? JSON.parse(savedFilters) : {
+      selectedRegionIds: [],
+      minPrice: null,
+      maxPrice: null,
+      minArea: null,
+      maxArea: null,
+      bedrooms: null
+    };
+    const updatedFilters = { ...currentFilters, ...updates };
+    localStorage.setItem('filterValues', JSON.stringify(updatedFilters));
   };
 
   const toggleRegionModal = () => {
