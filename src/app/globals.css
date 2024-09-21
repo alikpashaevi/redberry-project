@@ -2,7 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'FiraGo';
+  src: url('../public/assets/firago_5.1.0/webfonts/firago-latin-400-normal.woff2') format('woff2'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-400-normal.woff') format('woff'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-500-normal.woff') format('woff'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-600-normal.woff') format('woff'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-700-normal.woff') format('woff'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-500-normal.woff2') format('woff2'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-600-normal.woff2') format('woff2'),
+       url('../public/assets/firago_5.1.0/webfonts/firago-latin-700-normal.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 body {
+  font-family: 'FiraGo', sans-serif;
   width: 100%;
   min-height: 100vh;
 }

@@ -283,6 +283,11 @@ export default function Home() {
           setMaxPrice(maxPrice);
           setIsPriceOpen(false);
         }}
+        setMinPrice={setMinPrice}
+        setMaxPrice={setMaxPrice}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
+
       />
       <AreaRangeModal
         isOpen={isAreaOpen}
@@ -291,7 +296,12 @@ export default function Home() {
           setMinArea(minArea);
           setMaxArea(maxArea);
           setIsAreaOpen(false);
-        }}
+        }
+      }
+        setMinArea={setMinArea}
+        setMaxArea={setMaxArea}
+        minArea={minArea}
+        maxArea={maxArea}
       />
       <BedroomNumModal
         isOpen={isBedroomsOpen}
@@ -302,6 +312,8 @@ export default function Home() {
           setActiveFilter(null); // Clear the active filter when "არჩევა" is clicked
         }}
         clearBedroomInput={resetBedrooms}
+        bedroomNum={bedrooms}
+        setBedrooms={setBedrooms}
       />
       <Properties
         selectedRegions={selectedRegionIds}

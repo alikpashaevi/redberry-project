@@ -28,6 +28,18 @@ interface CardIdPage {
   deleteModal:() => void;
 }
 
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}/${month}/${day}`;
+}
+
+const formatPrice = (price: number): string => {
+  return price.toLocaleString('en-US');
+}
+
 export default function CardInfo ( {cardInfoProps, loading, deleteModal}: CardIdPage) {
   if (loading) {
     return <div className="absolute translate-x-50 translate-y-50">Loading...</div>;
@@ -41,11 +53,11 @@ export default function CardInfo ( {cardInfoProps, loading, deleteModal}: CardId
          src={cardInfoProps.image} alt="uploaded image" />
         <span
           className="text-[16px] leading-[19.2px] text-[#808A93] font-normal w-full text-end"
-        >გამოქვეყნების თარიღი {cardInfoProps.created_at}</span>
+        >გამოქვეყნების თარიღი {formatDate(cardInfoProps.created_at)}</span>
       </div>
       <div className='flex flex-col gap-[40px] py-[30px]'>
         <div>
-          <h1 className='font-bold text-[#021526] text-[48px] leading-[57.8px]'>{cardInfoProps.price} ₾</h1>
+          <h1 className='font-bold text-[#021526] text-[48px] leading-[57.8px]'>{formatPrice(cardInfoProps.price)} ₾</h1>
           <div className="flex flex-col gap-[16px]">
             <div className="flex items-center gap-[6px]">
               <span className="text-[#808A93]">
@@ -95,7 +107,7 @@ export default function CardInfo ( {cardInfoProps, loading, deleteModal}: CardId
               </div>
             </div>
             <div >
-              <button className='p-[10px] border border-[#676E76] rounded-[8px] text-[12px] leading-[14.4px] font-medium'
+              <button className='p-[10px] border border-[#808A93] text-[#808A93] rounded-[8px] text-[14px] leading-[16.84px] font-medium transition-all hover:bg-[#808A93] hover:text-[#fff]'
                 onClick={deleteModal}
               >ლისტინგის წაშლა</button>
             </div>

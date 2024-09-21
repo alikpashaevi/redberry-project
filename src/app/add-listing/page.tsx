@@ -167,20 +167,20 @@ export default function ListingPage() {
     }
 
 
-    // if (!/^\d+$/.test(area)) {
-    //   newErrors.area = 'მხოლოდ რიცხვები';
-    //   hasErrors = true;
-    // }
-
-    // if (!/^\d+$/.test(price)) {
-    //   newErrors.price = 'მხოლოდ რიცხვები';
-    //   hasErrors = true;
-    // }
-
-    // if (!/^\d+$/.test(bedrooms)) {
-    //   newErrors.bedrooms = 'მხოლოდ რიცხვები';
-    //   hasErrors = true;
-    // }
+    if (!/^\d+$/.test(String(area))) {
+      newErrors.area = 'მხოლოდ რიცხვები';
+      hasErrors = true;
+    }
+    
+    if (!/^\d+$/.test(String(price))) {
+      newErrors.price = 'მხოლოდ რიცხვები';
+      hasErrors = true;
+    }
+    
+    if (!/^\d+$/.test(String(bedrooms))) {
+      newErrors.bedrooms = 'მხოლოდ რიცხვები';
+      hasErrors = true;
+    }
 
     if (address.trim().length < 2) {
       newErrors.address = 'შეიყვანეთ ვალიდური მონაცემები';
@@ -491,7 +491,7 @@ export default function ListingPage() {
                     type="text"
                     value={price}
                     onChange={(e) => {
-                      setPrice(parseInt(e.target.value));
+                      setPrice(parseInt(e.target.value?.match(/\d+/g)?.join('') || '0'));
                       setErrors(prev => ({ ...prev, price: '' }));
                       if (/^\d+$/.test(e.target.value.trim())) {
                         setPriceSuccess(true);
@@ -519,7 +519,8 @@ export default function ListingPage() {
                     type="text"
                     value={area}
                     onChange={(e) => {
-                      setArea(parseInt(e.target.value));
+                      setArea(parseInt(e.target.value?.match(/\d+/g)?.join('') || '0'));
+
                       setErrors(prev => ({ ...prev, area: '' }));
                       if (/^\d+$/.test(e.target.value.trim())) {
                         setAreaSuccess(true);
@@ -550,7 +551,8 @@ export default function ListingPage() {
                     type="text"
                     value={bedrooms}
                     onChange={(e) => {
-                      setBedrooms(parseInt(e.target.value));
+                      setBedrooms(parseInt(e.target.value?.match(/\d+/g)?.join('') || '0'));
+
                       setErrors(prev => ({ ...prev, bedrooms: '' }));
                       if (/^\d+$/.test(e.target.value.trim())) {
                         setBedroomsSuccess(true);

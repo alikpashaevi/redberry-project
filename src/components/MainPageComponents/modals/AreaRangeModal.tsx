@@ -1,31 +1,45 @@
 "use client";
-import { useState } from "react";
+
+import { useEffect, useState } from "react";
 
 export default function AreaRangeModal({
   isOpen,
   onSelectAreaRange,
   onClose,
+  setMinArea,
+  setMaxArea,
+  minArea,
+  maxArea,
 }: {
   isOpen: boolean;
   onSelectAreaRange: (minArea: number | null, maxArea: number | null) => void;
   onClose: () => void;
+  setMinArea: (minArea: number | null) => void;
+  setMaxArea: (maxArea: number | null) => void;
+  minArea: number | null;
+  maxArea: number | null;
 }) {
-  const [minArea, setMinArea] = useState<number | null>(null);
-  const [maxArea, setMaxArea] = useState<number | null>(null);
+  const [tempMinArea, setTempMinArea] = useState<number | null>(null);
+  const [tempMaxArea, setTempMaxArea] = useState<number | null>(null);
 
   const applyAreaRange = () => {
-    if (minArea !== null && maxArea !== null && maxArea > minArea) {
-      onSelectAreaRange(minArea, maxArea);
+    if (tempMinArea !== null && tempMaxArea !== null && tempMaxArea > tempMinArea) {
+      onSelectAreaRange(tempMinArea, tempMaxArea);
       onClose();
     }
   };
 
+  useEffect(() => {
+    setTempMinArea(minArea);
+    setTempMaxArea(maxArea);
+  }, [minArea, maxArea]);
+
   const handleMinAreaClick = (value: number) => {
-    setMinArea(value);
+    setTempMinArea(value);
   };
 
   const handleMaxAreaClick = (value: number) => {
-    setMaxArea(value);
+    setTempMaxArea(value);
   };
 
   return (
@@ -33,32 +47,32 @@ export default function AreaRangeModal({
       <div className="flex flex-col gap-[32px]">
         <div className="w-full flex flex-col gap-[24px]">
           <h3 className="font-medium text-[16px] text-[#021526] leading-[19.2px]">
-            ფასის მიხედვით
+            ფართის მიხედვით
           </h3>
           <div className="flex flex-col gap-[8px] w-full">
             <div className="flex gap-[15px] w-full">
-              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minArea !== null && maxArea !== null && minArea > maxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${tempMinArea !== null && tempMaxArea !== null && tempMinArea > tempMaxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
                 <input
                   type="text"
                   className='w-full border-none outline-none'
                   placeholder="დან"
-                  value={minArea || ""}
+                  value={tempMinArea || ""}
                   onChange={(e) => setMinArea(e.target.value ? parseInt(e.target.value) : null)}
                 />
                 <span className="absolute top-[10px] right-[10px]">მ²</span>
               </div>
-              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minArea !== null && maxArea !== null && minArea > maxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${tempMinArea !== null && tempMaxArea !== null && tempMinArea > tempMaxArea ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
                 <input
                   type="text"
                   className='w-full border-none outline-none'
                   placeholder="მდე"
-                  value={maxArea || ""}
+                  value={tempMaxArea || ""}
                   onChange={(e) => setMaxArea(e.target.value ? parseInt(e.target.value) : null)}
                 />
                 <span className="absolute top-[10px] right-[10px]">მ²</span>
               </div>
             </div>
-            {minArea !== null && maxArea !== null && minArea > maxArea && (
+            {tempMinArea !== null && tempMaxArea !== null && tempMinArea > tempMaxArea && (
               <p className="text-red-600 text-[12px] w-full">ჩაწერეთ ვალიდური მონაცემები</p>
             )}
           </div>

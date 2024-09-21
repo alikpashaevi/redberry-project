@@ -51,6 +51,11 @@ export default function MainCard({ realEstates, loading,asSlider }: MainCardProp
       prevIndex - 1 < 0 ? realEstates.length - 1 : prevIndex - 1
     );
   };
+
+  const formatPrice = (price: number): string => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  };
+  
   if (asSlider) {
     return (
       <div className="relative">
@@ -125,7 +130,8 @@ export default function MainCard({ realEstates, loading,asSlider }: MainCardProp
             <div>
               <div className="flex flex-col gap-[20px] py-[22px] px-[25px] border-x-[1px] border-b-[1px] border-color-[#DBDBDB] rounded-b-[14px]">
                 <div className="flex flex-col gap-[6px]">
-                  <h3 className="font-bold text-[28px] leading-[33.6px]">{estate.price} ₾</h3>
+                  <h3 className="font-bold text-[28px] leading-[33.6px]">{formatPrice(estate.price)} ₾</h3>
+
                   <p className="flex gap-[4px] text-[16px] text-[#021526B2] font-normal leading-[19.2px]">
                     <Image src={locationIcon} height={20} width={20} alt="location icon" /> {estate.address}
                   </p>
@@ -149,3 +155,4 @@ export default function MainCard({ realEstates, loading,asSlider }: MainCardProp
     </div>
   );
 }
+

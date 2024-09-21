@@ -6,32 +6,41 @@ export default function BedroomNumModal({
   onSelectBedroomNum,
   onClose,
   clearBedroomInput,
+  bedroomNum,
+  setBedrooms,
 }: {
   isOpen: boolean;
   onSelectBedroomNum: (bedroomNum: number | null) => void;
   onClose: () => void;
   clearBedroomInput: () => void;
+  bedroomNum: number | null;
+  setBedrooms: (bedrooms: number | null) => void;
 }) {
-  const [bedroomNum, setBedroomNum] = useState<number | null>(null);
+  const [tempBedroomNum, setTempBedroomNum] = useState<number | null>(null);
   const [isInvalid, setIsInvalid] = useState(false);
 
   const applyBedroomNum = () => {
-    if (bedroomNum !== null && bedroomNum >= 0) {
-      onSelectBedroomNum(bedroomNum);
+    if (tempBedroomNum !== null && tempBedroomNum >= 0) {
+      onSelectBedroomNum(tempBedroomNum);
       onClose();
     }
   };
 
+  // useEffect(() => {
+  //   if (!tempBedroomNum) {
+  //     // setTempBedroomNum(null);
+  //     setBedrooms(null);
+  //     setIsInvalid(false);
+  //   }
+  // }, [clearBedroomInput]);
+
   useEffect(() => {
-    if (!bedroomNum) {
-      setBedroomNum(null);
-      setIsInvalid(false);
-    }
-  }, [clearBedroomInput]);
+    setTempBedroomNum(bedroomNum);
+  }, [bedroomNum]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value ? parseInt(e.target.value) : null;
-    setBedroomNum(value);
+    setTempBedroomNum(value);
     setIsInvalid(value !== null && value < 0);
   };
 
@@ -48,7 +57,7 @@ export default function BedroomNumModal({
               type="text"
               className="w-full border-none outline-none text-center"
               
-              value={bedroomNum || ""}
+              value={tempBedroomNum || ""}
               onChange={handleInputChange}
             />
           </div>

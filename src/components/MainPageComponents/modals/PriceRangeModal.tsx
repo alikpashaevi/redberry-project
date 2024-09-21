@@ -1,31 +1,46 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function PriceRangeModal({
   isOpen,
   onSelectPriceRange,
   onClose,
+  setMinPrice,
+  setMaxPrice,
+  minPrice,
+  maxPrice,
 }: {
   isOpen: boolean;
   onSelectPriceRange: (minPrice: number | null, maxPrice: number | null) => void;
   onClose: () => void;
+  setMinPrice: (minPrice: number | null) => void;
+  setMaxPrice: (maxPrice: number | null) => void;
+  minPrice: number | null;
+  maxPrice: number | null;
 }) {
-  const [minPrice, setMinPrice] = useState<number | null>(null);
-  const [maxPrice, setMaxPrice] = useState<number | null>(null);
+  const [tempMinPrice, setTempMinPrice] = useState<number | null>(null);
+  const [tempMaxPrice, setTempMaxPrice] = useState<number | null>(null);
 
   const applyPriceRange = () => {
-    if (minPrice !== null && maxPrice !== null && maxPrice > minPrice) {
-      onSelectPriceRange(minPrice, maxPrice);
+    if (tempMinPrice !== null && tempMaxPrice !== null && tempMaxPrice > tempMinPrice) {
+      onSelectPriceRange(tempMinPrice, tempMaxPrice);
       onClose(); // Close the modal
     }
   };
 
+  useEffect(() => {
+    setTempMinPrice(minPrice);
+    setTempMaxPrice(maxPrice);
+  }, [minPrice, maxPrice]);
+
   const handleMinPriceClick = (price: number) => {
-    setMinPrice(price);
+    // setMinPrice(price);
+    setTempMinPrice(price);
   };
 
   const handleMaxPriceClick = (price: number) => {
-    setMaxPrice(price);
+    // setMaxPrice(price);
+    setTempMaxPrice(price);
   };
 
   return (
@@ -37,28 +52,28 @@ export default function PriceRangeModal({
           </h3>
           <div className="flex flex-col gap-[8px] w-full">
             <div className="flex gap-[15px] w-full">
-              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minPrice !== null && maxPrice !== null && minPrice > maxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${tempMinPrice !== null && tempMaxPrice !== null && tempMinPrice > tempMaxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
                 <input
                   type="text"
                   className="w-full border-none outline-none"
                   placeholder="დან"
-                  value={minPrice || ""}
+                  value={tempMinPrice || ""}
                   onChange={(e) => setMinPrice(e.target.value ? parseInt(e.target.value) : null)}
                 />
                 <span className="absolute top-[10px] right-[10px]">₾</span>
               </div>
-              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${minPrice !== null && maxPrice !== null && minPrice > maxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
+              <div className={`w-1/2 relative rounded-[6px] pr-[24px] ${tempMinPrice !== null && tempMaxPrice !== null && tempMinPrice > tempMaxPrice ? 'border-red-600' : "border-[#dbdbdb]"} border-[1px] p-[10px]`}>
                 <input
                   type="text"
                   className="w-full border-none outline-none"
                   placeholder="მდე"
-                  value={maxPrice || ""}
+                  value={tempMaxPrice  || ""}
                   onChange={(e) => setMaxPrice(e.target.value ? parseInt(e.target.value) : null)}
                 />
                 <span className="absolute top-[10px] right-[10px]">₾</span>
               </div>
             </div>
-            {minPrice !== null && maxPrice !== null && minPrice > maxPrice && (
+            {tempMinPrice !== null && tempMaxPrice !== null && tempMinPrice > tempMaxPrice && (
               <p className="text-red-600 text-[12px] w-full">ჩაწერეთ ვალიდური მონაცემები</p>
             )}
           </div>
