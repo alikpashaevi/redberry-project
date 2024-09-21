@@ -6,7 +6,10 @@ import MainCard from "@/components/MainPageComponents/MainCard";
 import { useEffect, useState } from "react";
 
 //icons
-import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+// import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+
+import Image from "next/image";
+import leftArrow from "../../public/icons/leftArrow.png";
 
 export default function cardMainPage ({ params }: { params: { cardId: number} }) {
 
@@ -152,7 +155,7 @@ export default function cardMainPage ({ params }: { params: { cardId: number} })
         <div className="flex flex-col items-center w-full justify-center pt-[64px]">
           <div className="flex w-[1591px] items-start">
             <a href='/' className="p-[6px] text-[32px] mb-[29px] hover:bg-[#dbdbdb] rounded-[50%]">
-              <FiArrowLeft />
+              <Image src={leftArrow} alt="leftArrow" />
             </a>
           </div>
           <CardInfo 

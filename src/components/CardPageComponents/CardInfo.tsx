@@ -5,8 +5,11 @@ import vector from  "../../public/icons/Vector.png";
 import zipIcon from "../../public/icons/zip.png";
 import bedIcon from "../../public/icons/bed.png"; 
 import locationIcon from "../../public/icons/location-marker.png";
-import { FaRegEnvelope } from "react-icons/fa";
-import { LiaPhoneVolumeSolid } from "react-icons/lia";
+// import { FaRegEnvelope } from "react-icons/fa";
+// import { LiaPhoneVolumeSolid } from "react-icons/lia";
+
+import phoneIcon from "../../public/icons/phoneIcon.png"
+import emailIcon from "../../public/icons/emailIcon.png";
 
 interface CardInfoProps {
   id: number,
@@ -102,8 +105,8 @@ export default function CardInfo ( {cardInfoProps, loading, deleteModal}: CardId
                 </div>
               </div>
               <div className='flex flex-col gap-[4px]'>
-                <div className='flex items-center gap-[5px] text-[#808A93]'><span ><FaRegEnvelope/></span><p className='text-[14px] leading-[16.8px]'>{cardInfoProps.agent.email}</p></div>
-                <div className='flex items-center gap-[5px] text-[#808A93]'><span><LiaPhoneVolumeSolid/></span><p className='text-[14px] leading-[16.8px]'>{cardInfoProps.agent.phone}</p></div>
+                <div className='flex items-center gap-[5px] text-[#808A93]'><span ><Image src={phoneIcon} width={12} height={12} alt="phone"/></span><p className='text-[14px] leading-[16.8px]'>{cardInfoProps.agent.email}</p></div>
+                <div className='flex items-center gap-[5px] text-[#808A93]'><span><Image src={emailIcon} width={12} height={12} alt="phone"/></span><p className='text-[14px] leading-[16.8px]'>{cardInfoProps.agent.phone}</p></div>
               </div>
             </div>
             <div >
