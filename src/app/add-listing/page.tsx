@@ -362,7 +362,7 @@ export default function ListingPage() {
                   </span>
                   <input
                     className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                      errors.address ? "border-red-500" : addressSuccess ? "border-green-500" : "border-[#808A93]"
+                      errors.address ? "border-red-500" : "border-[#808A93]"
                     }`}
                     type="text"
                     value={address}

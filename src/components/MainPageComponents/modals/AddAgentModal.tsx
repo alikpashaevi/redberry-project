@@ -189,7 +189,7 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.name ? "border-red-500" : isValid.name ? "border-green-500" : "border-[#808A93]"
+                    errors.name ? "border-red-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={name}
@@ -208,7 +208,7 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.surname ? "border-red-500" : isValid.surname ? "border-green-500" : "border-[#808A93]"
+                    errors.surname ? "border-red-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={surname}
@@ -229,7 +229,7 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.email ? "border-red-500" : isValid.email ? "border-green-500" : "border-[#808A93]"
+                    errors.email ? "border-red-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={email}
@@ -248,7 +248,7 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.phone ? "border-red-500" : isValid.phone ? "border-green-500" : "border-[#808A93]"
+                    errors.phone ? "border-red-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={phone}
