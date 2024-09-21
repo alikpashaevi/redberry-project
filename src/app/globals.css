@@ -13,8 +13,21 @@
        url('../public/assets/firago_5.1.0/webfonts/firago-latin-600-normal.woff2') format('woff2'),
        url('../public/assets/firago_5.1.0/webfonts/firago-latin-700-normal.woff2') format('woff2');
   font-weight: normal;
+  font-weight: medium;
   font-style: normal;
+  font-style: medium;
+  font-family: bold;
+  font-style: bold;
 }
+
+/* @font-face {
+  font-family: 'HelveticaNeue';
+  src: url('../public/assets/helvetica/HelveticaNeueBlack.otf') format('otf'),
+  url('../public/assets/helvetica/HelveticaNeueBold.otf') format('otf'),
+  url('../public/assets/helvetica/HelveticaNeueMedium.otf') format('otf'),
+  url('../public/assets/helvetica/HelveticaNeueLight.otf') format('otf'),
+  url('../public/assets/helvetica/HelveticaNeueHeavy.otf') format('otf'),
+} */
 
 body {
   font-family: 'FiraGo', sans-serif;

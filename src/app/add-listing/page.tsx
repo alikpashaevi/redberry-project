@@ -218,31 +218,8 @@ export default function ListingPage() {
         formData.append('description', description);
         formData.append('agent_id', selectedAgentId !== null ? selectedAgentId.toString() : '0');
 
-        console.log('is_rental:', (document.querySelector('input[name="rentOrSale"]:checked') as HTMLInputElement)?.value || '');
-        console.log('address:', address);
-        console.log('zip_code:', postal);
-        console.log('region_id:', selectedRegion?.toString() || '');
-        console.log('city_id:', (selectedCity?.toString() || ''));
-        console.log('price:', price);
-        console.log('area:', area);
-        console.log('bedrooms:', bedrooms);
-        console.log('description:', description);
-        console.log('agent_id:', selectedAgentId);
-      
-        console.log('is_rental type:', typeof ((document.querySelector('input[name="rentOrSale"]:checked') as HTMLInputElement)?.value || ''));
-        console.log('address type:', typeof address);
-        console.log('zip_code type:', typeof postal);
-        console.log('region_id type:', typeof (selectedRegion?.toString() || ''));
-        console.log('city_id type:', typeof (selectedCity?.toString() || ''));
-        console.log('price type:', typeof price);
-        console.log('area type:', typeof area);
-        console.log('bedrooms type:', typeof bedrooms);
-        console.log('description type:', typeof description);
-        console.log('agent_id type:', typeof selectedAgentId);
 
-        // Append the image file if it exists
         if (uploadedImage) {
-          // Convert base64 to blob
           const response = await fetch(uploadedImage);
           const blob = await response.blob();
           formData.append('image', blob, 'avatar.jpg');
@@ -261,12 +238,12 @@ export default function ListingPage() {
         );
 
         console.log('API Response:', response.data);
-        // Handle successful submission (e.g., show success message, redirect, etc.)
+        // Handle successful submission 
       } catch (error) {
         console.error('Error submitting form:', error);
-        // Handle error (e.g., show error message to user)
+        // Handle error
       }
-      // window.location.href = '/';
+      window.location.href = '/';
     }
   };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
