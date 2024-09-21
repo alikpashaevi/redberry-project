@@ -1,11 +1,18 @@
 "use client"
 import { useState, useEffect } from 'react';
-import { IoCheckmarkSharp } from 'react-icons/io5';
-import { FaP, FaPlus } from "react-icons/fa6";
-import { FaRegTrashAlt } from "react-icons/fa";
-import { IoIosArrowDown, IoIosCheckmark } from 'react-icons/io';
+// import { IoCheckmarkSharp } from 'react-icons/io5';
+// import { FaP, FaPlus } from "react-icons/fa6";
+// import { FaRegTrashAlt } from "react-icons/fa";
+// import { IoIosArrowDown, IoIosCheckmark } from 'react-icons/io';
 import axios from 'axios';
 import AddAgentModal from '@/components/MainPageComponents/modals/AddAgentModal';
+
+import Image from 'next/image';
+
+import checkmark from "../../public/icons/checkmark.png";
+import plusIcon from "../../public/icons/plusIcon.png";
+import trashIcon from "../../public/icons/trashIcon.png";
+import arrowDown from "../../public/icons/arrowDown.png";
 
 export default function ListingPage() {
   const [address, setAddress] = useState('');
@@ -355,7 +362,7 @@ export default function ListingPage() {
                     
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.address ? 'text-red-500' : addressSuccess ? 'text-green-500' : 'text-[#021526]'} flex items-center gap-[7px]`}>
-                    {errors.address ? <span>{errors.address}</span> : <span className="flex items-center gap-[5px]"><IoCheckmarkSharp/>მინიმუმ ორი სიმბოლო</span>}
+                    {errors.address ? <span>{errors.address}</span> : <span className="flex items-center gap-[5px]"><Image src={checkmark} width={12} height={12} alt='checkmark'/>მინიმუმ ორი სიმბოლო</span>}
                   </div>
                 </div>
                 <div className="flex flex-col gap-[4px] w-1/2">
@@ -379,7 +386,7 @@ export default function ListingPage() {
                     }}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.postal ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    {errors.postal ? <span>{errors.postal}</span> : <span className={`flex items-center gap-[5px] ${postalSuccess ? "text-green-500": "text-[#021526]"}`}><IoCheckmarkSharp/>მხოლოდ რიცხვები</span>}
+                    {errors.postal ? <span>{errors.postal}</span> : <span className={`flex items-center gap-[5px] ${postalSuccess ? "text-green-500": "text-[#021526]"}`}><Image src={checkmark} width={12} height={12} alt='checkmark'/>მხოლოდ რიცხვები</span>}
                   </div>
                 </div>
               </div>
@@ -395,7 +402,7 @@ export default function ListingPage() {
                     onClick={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}
                   >
                     {selectedRegionName || 'არჩევა'} 
-                    <IoIosArrowDown />
+                    <Image src={arrowDown} width={12} height={12} alt="arrowDown" />
                   </div>
                   {isRegionDropdownOpen && (
                     <div className="absolute z-10 w-full mt-[66px] bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
@@ -428,7 +435,7 @@ export default function ListingPage() {
                     onClick={() => selectedRegion && setIsCityDropdownOpen(!isCityDropdownOpen)}
                   >
                     {selectedCityName || 'არჩევა'} 
-                    <IoIosArrowDown />
+                    <Image src={arrowDown} width={12} height={12} alt="arrowDown" />
                   </div>
                   {isCityDropdownOpen && (
                     <div className="absolute z-10 w-full mt-[66px] bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
@@ -480,7 +487,7 @@ export default function ListingPage() {
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.price ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
-                      <IoCheckmarkSharp />
+                      <Image src={checkmark} width={12} height={12} alt="check" />
                     </span>
                     {errors.price || "მხოლოდ რიცხვები"}
                   </div>
@@ -509,7 +516,7 @@ export default function ListingPage() {
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.area ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span >
-                      <IoCheckmarkSharp />
+                      <Image src={checkmark} width={12} height={12} alt="check" />
                     </span>
                     {errors.area || "მხოლოდ რიცხვები"}
                   </div>
@@ -541,7 +548,7 @@ export default function ListingPage() {
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.bedrooms ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
-                      <IoCheckmarkSharp />
+                      <Image src={checkmark} width={12} height={12} alt="check" />
                     </span>
                     {errors.bedrooms || "მხოლოდ რიცხვები"}
                   </div>
@@ -569,7 +576,7 @@ export default function ListingPage() {
                     
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.description ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    {errors.description ? <span>{errors.description}</span> : <span className={`flex items-center gap-[5px] ${descriptionSuccess ? "text-green-500": "text-[#021526]"}`}><IoCheckmarkSharp/>მინიმუმ 5 სიტყვა</span>}
+                    {errors.description ? <span>{errors.description}</span> : <span className={`flex items-center gap-[5px] ${descriptionSuccess ? "text-green-500": "text-[#021526]"}`}><Image src={checkmark} width={12} height={12} alt='checkmark'/>მინიმუმ 5 სიტყვა</span>}
                   </div>
                 </div>
               </div>
@@ -589,14 +596,14 @@ export default function ListingPage() {
                         onClick={handleRemoveImage}
                         className="z-10 w-[24px] h-[24px] text-[14px] absolute bottom-[-4px] right-[-4px] flex items-center justify-center rounded-full border-[1px] border-[#021526] bg-white text-[#021526]"
                       >
-                        <FaRegTrashAlt />
+                        <Image src={trashIcon} width={24} height={24} alt="trash" />
                       </button>
                     </div>
                   ) : (
                     <label htmlFor="fileInput" className="cursor-pointer w-full h-full flex items-center justify-center">
-                      <div className="w-[24px] h-[24px] flex items-center justify-center border border-[#2D3648] rounded-full text-center">
+                      <div className="w-[24px] h-[24px] flex items-center justify-center text-center">
                         <span className="text-[#2D3648] text-[14px] font-bold">
-                          <FaPlus />
+                          <Image src={plusIcon} width={24} height={24} alt="plus" />
                         </span>
                       </div>
                     </label>
@@ -624,7 +631,7 @@ export default function ListingPage() {
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
                 {selectedAgent || 'არჩევა'} 
-                <IoIosArrowDown />
+                <Image src={arrowDown} width={12} height={12} alt="arrowDown" />
               </div>
               {isDropdownOpen && (
                 <div className="absolute z-10 w-full mt-0 bg-white border border-[#808A93] rounded-b-[6px] shadow-lg">
@@ -632,7 +639,7 @@ export default function ListingPage() {
                    className="flex items-center gap-[10px] w-full p-[10px] text-left hover:bg-gray-100 border-b-[1px] border-[#808A93]"
                    onClick={toggleAgentModal}
                    >
-                    <span className='border-[1px] border-[#021526] rounded-full text-[#021526] text-[11px] p-[3px]'><FaPlus /></span> დაამატე აგენტი
+                    <span className='border-[1px] border-[#021526] rounded-full text-[#021526] text-[11px] p-[3px]'><Image src={plusIcon} width={12} height={12} alt="plus"/></span> დაამატე აგენტი
                   </button>
                   {agentNames.map((agent, index) => (
                     <div

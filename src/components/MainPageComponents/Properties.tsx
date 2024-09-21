@@ -1,4 +1,7 @@
-import { IoIosClose } from "react-icons/io";
+// import { IoIosClose } from "react-icons/io";
+import Image from "next/image";
+
+import closeIcon from  "../../public/icons/closeIcon.png";
 
 export default function Properties({
   selectedRegions,
@@ -45,20 +48,20 @@ export default function Properties({
             }}
           >
             {regions.find((r: any) => r.id === region)?.name}
-          <IoIosClose />
+          <Image src={closeIcon} alt="closeIcon" />
         </div>
       ))} 
 
         <div className={`${minArea !== null ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
           onClick={resetArea}
-        >{minArea} მ<sup>2</sup> - {maxArea} მ<sup>2</sup><IoIosClose /></div>
+        >{minArea} მ<sup>2</sup> - {maxArea} მ<sup>2</sup><Image src={closeIcon} alt="closeIcon" /></div>
         <div className={`${minPrice !== null ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
           onClick={resetPrice}
-        >{minPrice}₾ - {maxPrice}₾ <IoIosClose /></div>
+        >{minPrice}₾ - {maxPrice}₾ <Image src={closeIcon} alt="closeIcon" /></div>
         <div className={`${bedrooms !== null ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
           onClick={resetBedrooms} // Add onClick to reset bedrooms
         >
-          {bedrooms} <IoIosClose />
+          {bedrooms} <Image src={closeIcon} alt="closeIcon" />
         </div>
       </div>
       <span className="flex items-center font-medium text-[14px] cursor-pointer"

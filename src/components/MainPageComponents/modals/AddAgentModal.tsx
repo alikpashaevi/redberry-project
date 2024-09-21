@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { IoCheckmarkSharp } from "react-icons/io5";
-import { FaPlus } from "react-icons/fa6";
-import { FaRegTrashAlt } from "react-icons/fa";
+// import { IoCheckmarkSharp } from "react-icons/io5";
+// import { FaPlus } from "react-icons/fa6";
+// import { FaRegTrashAlt } from "react-icons/fa";
 import axios from 'axios';
+import Image from 'next/image';
+
+import checkmark from "../../../public/icons/checkmark.png";
+import plusIcon from "../../../public/icons/plusIcon.png";
+import trashIcon from "../../../public/icons/trashIcon.png";
+
 
 export default function AddAgentModal({
   isAgentOpen,
@@ -197,7 +203,7 @@ export default function AddAgentModal({
                 />
                 <div className={`text-[14px] leading-[16.8px] ${errors.name ? 'text-red-500' : isValid.name ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
-                    <IoCheckmarkSharp />
+                    <Image src={checkmark} alt="Plus" width={14} height={14} />
                   </span>
                   {errors.name || "მინიმუმ ორი სიმბოლო"}
                 </div>
@@ -216,7 +222,8 @@ export default function AddAgentModal({
                 />
                 <div className={`text-[14px] leading-[16.8px] ${errors.surname ? 'text-red-500' : isValid.surname ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
-                    <IoCheckmarkSharp />
+                  <Image src={checkmark} alt="Plus" width={12} height={12} />
+
                   </span>
                   {errors.surname || "მინიმუმ ორი სიმბოლო"}
                 </div>
@@ -237,7 +244,8 @@ export default function AddAgentModal({
                 />
                 <div className={`text-[14px] leading-[16.8px] ${errors.email ? 'text-red-500' : isValid.email ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
-                    <IoCheckmarkSharp />
+                  <Image src={checkmark} alt="Plus" width={12} height={12} />
+
                   </span>
                   {errors.email || "გამოიყენეთ @redberry.ge ფოსტა"}
                 </div>
@@ -256,7 +264,8 @@ export default function AddAgentModal({
                 />
                 <div className={`text-[14px] leading-[16.8px] ${errors.phone ? 'text-red-500' : isValid.phone ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
-                    <IoCheckmarkSharp />
+                  <Image src={checkmark} alt="Plus" width={12} height={12} />
+
                   </span>
                   {errors.phone || "მხოლოდ რიცხვები"}
                 </div>
@@ -280,15 +289,17 @@ export default function AddAgentModal({
                       onClick={handleRemoveImage}
                       className="z-10 w-[24px] h-[24px] text-[14px] absolute bottom-[-4px] right-[-4px] flex items-center justify-center rounded-full border-[1px] border-[#021526] bg-white text-[#021526]"
                     >
-                      <FaRegTrashAlt />
+                      <Image src={trashIcon} alt="Plus" width={12} height={12} />
+
                     </button>
                   </div>
                 ) : (
                   <label htmlFor="fileInput" className="cursor-pointer w-full h-full flex items-center justify-center">
-                    <div className="w-[24px] h-[24px] flex items-center justify-center border border-[#2D3648] rounded-full text-center">
-                      <span className="text-[#2D3648] text-[14px] font-bold">
-                        <FaPlus />
-                      </span>
+                    <div className="w-[24px] h-[24px] flex items-center justify-center  text-center">
+                      
+                      <Image src={plusIcon} alt="Plus" width={24} height={24} />
+
+                      
                     </div>
                   </label>
                 )}

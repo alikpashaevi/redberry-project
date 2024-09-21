@@ -1,6 +1,9 @@
 "use client";
-import { IoIosArrowDown } from "react-icons/io";
-import { FiPlus } from "react-icons/fi";
+// import { IoIosArrowDown } from "react-icons/io";
+// import { FiPlus } from "react-icons/fi";
+
+import Image from "next/image";
+import arrowDown from "../../public/icons/arrowDown.png";
 
 export default function NavBar({
   toggleRegionModal,
@@ -30,7 +33,7 @@ export default function NavBar({
         >
           რეგიონი
           <span className={`transition-transform ${isActive("region") ? "rotate-180" : ""}`}>
-            <IoIosArrowDown />
+            <Image src={arrowDown} alt="arrowDown" />
           </span>
         </button>
         <button
@@ -41,7 +44,7 @@ export default function NavBar({
         >
           საფასო კატეგორია
           <span className={`transition-transform ${isActive("price") ? "rotate-180" : ""}`}>
-            <IoIosArrowDown />
+            <Image src={arrowDown} alt="arrowDown" />
           </span>
         </button>
         <button
@@ -52,7 +55,7 @@ export default function NavBar({
         >
           ფართობი
           <span className={`transition-transform ${isActive("area") ? "rotate-180" : ""}`}>
-            <IoIosArrowDown />
+            <Image src={arrowDown} alt="arrowDown" />
           </span>
         </button>
         <button
@@ -63,20 +66,20 @@ export default function NavBar({
         >
           საძინებლების რაოდენობა
           <span className={`transition-transform ${isActive("bedrooms") ? "rotate-180" : ""}`}>
-            <IoIosArrowDown />
+            <Image src={arrowDown} alt="arrowDown" />
           </span>
         </button>
       </div>
       <div className="flex gap-[16px]">
         <a href="/add-listing" className="flex transition-all gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] bg-[#F93B1D] text-white hover:bg-[#DF3014]">
-          <FiPlus />
+          +
           ლისტინგის დამატება
         </a>
         <div 
           className="flex transition-all gap-[2px] items-center font-medium text-[16px] text-center cursor-pointer py-[10px] px-[16px] rounded-[10px] border-[#F93B1D] border-[1px] text-[#F93B1D] hover:bg-[#F93B1D] hover:text-white"
           onClick={toggleAgentModal}
           >
-          <FiPlus />
+          +
           აგენტის დამატება
         </div>
       </div>

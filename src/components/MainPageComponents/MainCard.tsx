@@ -2,10 +2,12 @@
 
 import React  from "react";
 import Image from 'next/image';
-import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
+// import { FiArrowRight, FiArrowLeft } from 'react-icons/fi';
 
 //icons
 import vector from  "../../public/icons/Vector.png";
+import leftArrow from "../../public/icons/leftArrow.png";
+import rightArrow from "../../public/icons/rigthArrow.png";
 import zipIcon from "../../public/icons/zip.png";
 import bedIcon from "../../public/icons/bed.png"; 
 import locationIcon from "../../public/icons/location-marker.png";
@@ -103,21 +105,21 @@ export default function MainCard({ realEstates, loading, asSlider }: MainCardPro
             ))}
           </div>
         </div>
-        <span 
-          className="absolute left-[-40px] top-[213px] transform -translate-y-1/2 text-[30px] cursor-pointer"
-          onClick={handlePrev}
-        >
-          <FiArrowLeft />
-        </span>
-        <span 
-          className="absolute right-[-40px] top-[213px] transform -translate-y-1/2 text-[30px] cursor-pointer"
-          onClick={handleNext}
-        >
-          <FiArrowRight />
-        </span>
-      </div>
-    );
-  }
+          <span 
+            className="absolute left-[-40px] top-[213px] transform -translate-y-1/2 cursor-pointer"
+            onClick={handlePrev}
+          >
+            <Image src={leftArrow} width={30} height={30} alt="Previous" />
+          </span>
+          <span 
+            className="absolute right-[-40px] top-[213px] transform -translate-y-1/2 cursor-pointer"
+            onClick={handleNext}
+          >
+            <Image src={rightArrow} width={30} height={30} alt="Next" />
+          </span>
+        </div>
+      );
+    }
 
   return (
     <div className="flex flex-wrap gap-[20px] pb-[300px] w-[1596px]">
