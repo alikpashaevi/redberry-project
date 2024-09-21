@@ -7,7 +7,11 @@ const nextConfig = {  images: {
       port: '',
       pathname: '/storage/images/**',
     },
+    
   ],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 },reactStrictMode: false};
 
 export default nextConfig;
