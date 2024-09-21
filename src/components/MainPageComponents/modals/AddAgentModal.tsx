@@ -142,6 +142,12 @@ export default function AddAgentModal({
     onClose();
   };
 
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
 
 
   return (
@@ -149,6 +155,7 @@ export default function AddAgentModal({
       className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm ${
         isAgentOpen ? "block" : "hidden"
       }`}
+      onClick={handleBackdropClick}
     >
       <div className="relative bg-white rounded-[10px] w-[1009px] flex justify-center items-center px-[105px] py-[87px]">
         <div className="flex flex-col gap-[72px] w-full">

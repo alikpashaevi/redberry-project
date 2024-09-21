@@ -20,6 +20,14 @@ export default function PriceRangeModal({
     }
   };
 
+  const handleMinPriceClick = (price: number) => {
+    setMinPrice(price);
+  };
+
+  const handleMaxPriceClick = (price: number) => {
+    setMaxPrice(price);
+  };
+
   return (
     <div className={`absolute z-10 bg-white top-[234px] left-[306px] w-[382px] rounded-[10px] border-[1px] border-[#DBDBDB] p-[24px] ${isOpen ? "block" : "hidden"}`}>
       <div className="flex flex-col gap-[32px]">
@@ -58,22 +66,30 @@ export default function PriceRangeModal({
             <div className="w-full flex flex-col gap-[16px]">
               <h3 className="text-start text-[#021526] font-medium text-[14px] leading-[16.8px]">მინ. ფასი</h3>
               <ul>
-                <li>50,000 ₾</li>
-                <li>100,000 ₾</li>
-                <li>150,000 ₾</li>
-                <li>200,000 ₾</li>
-                <li>300,000 ₾</li>
-              </ul>
+              {[50000, 100000, 150000, 200000, 300000].map((price) => (
+                <li
+                  key={price}
+                  className="cursor-pointer hover:bg-gray-100 p-1"
+                  onClick={() => handleMinPriceClick(price)}
+                >
+                  {price.toLocaleString()} ₾
+                </li>
+              ))}
+            </ul>
             </div>
             <div className="w-full flex flex-col gap-[16px]">
               <h3 className="text-start text-[#021526] font-medium text-[14px] leading-[16.8px]">მაქს. ფასი</h3>
               <ul>
-                <li>50,000 ₾</li>
-                <li>100,000 ₾</li>
-                <li>150,000 ₾</li>
-                <li>200,000 ₾</li>
-                <li>300,000 ₾</li>
-              </ul>
+              {[50000, 100000, 150000, 200000, 300000].map((price) => (
+                <li
+                  key={price}
+                  className="cursor-pointer hover:bg-gray-100 p-1"
+                  onClick={() => handleMaxPriceClick(price)}
+                >
+                  {price.toLocaleString()} ₾
+                </li>
+              ))}
+            </ul>
             </div>
           </div>
         </div>

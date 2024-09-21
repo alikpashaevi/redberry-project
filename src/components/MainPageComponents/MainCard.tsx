@@ -112,7 +112,7 @@ export default function MainCard({ realEstates, loading,asSlider }: MainCardProp
     
     <div className="flex flex-wrap gap-[20px] pb-[300px] w-[1596px]">
       {realEstates.length === 0 ? (
-        <div>No properties found for the selected region.</div>
+        <div>აღნიშნული მონაცემებით განცხადება არ იძებნება.</div>
       ) : (
         realEstates.map((estate) => (
           <a href={`/${estate.id}`} key={estate.id} className="flex flex-col w-[384px] rounded-[14px] overflow-hidden relative">

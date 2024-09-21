@@ -35,7 +35,8 @@ export default function ListingPage() {
   const [isCityDropdownOpen, setIsCityDropdownOpen] = useState(false);
   const [selectedCityName, setSelectedCityName] = useState('');
   const [isRegionDropdownOpen, setIsRegionDropdownOpen] = useState(false);
-const [selectedRegionName, setSelectedRegionName] = useState('');
+  const [selectedRegionName, setSelectedRegionName] = useState('');
+  const [selectedCity, setSelectedCity] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchRegions = async () => {
@@ -155,7 +156,7 @@ const [selectedRegionName, setSelectedRegionName] = useState('');
         formData.append('address', address);
         formData.append('zip_code', postal);
         formData.append('region_id', selectedRegion?.toString() || '');
-        formData.append('city_id', (document.getElementById('cities') as HTMLSelectElement).value);
+        formData.append('city_id', (selectedCity?.toString() || ''));
         formData.append('price', price.toString());
         formData.append('area', area.toString());
         formData.append('bedrooms', bedrooms.toString());
@@ -166,7 +167,7 @@ const [selectedRegionName, setSelectedRegionName] = useState('');
         console.log('address:', address);
         console.log('zip_code:', postal);
         console.log('region_id:', selectedRegion?.toString() || '');
-        console.log('city_id:', (document.getElementById('cities') as HTMLSelectElement).value);
+        console.log('city_id:', (selectedCity?.toString() || ''));
         console.log('price:', price);
         console.log('area:', area);
         console.log('bedrooms:', bedrooms);
@@ -177,7 +178,7 @@ const [selectedRegionName, setSelectedRegionName] = useState('');
         console.log('address type:', typeof address);
         console.log('zip_code type:', typeof postal);
         console.log('region_id type:', typeof (selectedRegion?.toString() || ''));
-        console.log('city_id type:', typeof (parseInt((document.getElementById('cities') as HTMLSelectElement).value)));
+        console.log('city_id type:', typeof (selectedCity?.toString() || ''));
         console.log('price type:', typeof price);
         console.log('area type:', typeof area);
         console.log('bedrooms type:', typeof bedrooms);
@@ -210,7 +211,7 @@ const [selectedRegionName, setSelectedRegionName] = useState('');
         console.error('Error submitting form:', error);
         // Handle error (e.g., show error message to user)
       }
-      window.location.href = '/';
+      // window.location.href = '/';
     }
   };
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -386,6 +387,7 @@ const [selectedRegionName, setSelectedRegionName] = useState('');
                           onClick={() => {
                             setSelectedCityName(city.name);
                             setIsCityDropdownOpen(false);
+                            setSelectedCity(city.id); 
                             // You might want to store the selected city ID as well
                           }}
                         >

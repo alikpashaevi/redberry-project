@@ -43,11 +43,11 @@ export default function BedroomNumModal({
             საძინებლების რაოდენობა
           </h3>
           <div>
-          <div className={`w-full relative rounded-[6px] pr-[24px] border-[1px] p-[10px] ${isInvalid ? 'border-red-600' : ''}`}>
+          <div className={`w-[42px] h-[42px] relative rounded-[6px]  border-[1px] flex items-center  ${isInvalid ? 'border-red-600' : ''}`}>
             <input
-              type="number"
-              className="w-full border-none outline-none"
-              placeholder="საძინებლების რაოდენობა"
+              type="text"
+              className="w-full border-none outline-none text-center"
+              
               value={bedroomNum || ""}
               onChange={handleInputChange}
             />

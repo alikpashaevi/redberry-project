@@ -40,6 +40,7 @@ export default function Home() {
   
   const [regions, setRegions] = useState<{ id: number, name: string }[]>([]); 
   const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([]); // Still track IDs here
+  const [activeRegionIds, setActiveRegionIds] = useState<number[]>([]); // Still track IDs here
   const [isOpen, setIsOpen] = useState(false);
   const [isPriceOpen, setIsPriceOpen] = useState(false);
   const [isAreaOpen, setIsAreaOpen] = useState(false);
@@ -121,7 +122,7 @@ export default function Home() {
 
   // Filter real estate data based on selected region names
   useEffect(() => {
-    console.log("here 1")
+    console.log("here 1", selectedRegionIds)
     let filtered = realEstates;
   
     // Filter by selected regions
@@ -180,6 +181,7 @@ export default function Home() {
   const resetRegions = () => {
     setSelectedRegionIds([]);
     updateLocalStorage({ selectedRegionIds: [] });
+    setActiveRegionIds([]);
   };
 
   const resetPrice = () => {
@@ -268,6 +270,10 @@ export default function Home() {
         regions={regions}
         onSelectRegions={handleSelectRegions}
         onClose={toggleRegionModal}
+        selectedRegionIds={selectedRegionIds|| []}
+        activeRegionIds={activeRegionIds}
+        setActiveRegionIds={setActiveRegionIds}
+        setSelectedRegionIds={setSelectedRegionIds}
       />
       <PriceRangeModal
         isOpen={isPriceOpen}
@@ -298,9 +304,8 @@ export default function Home() {
         clearBedroomInput={resetBedrooms}
       />
       <Properties
-        selectedRegions={regions
-          .filter((region) => selectedRegionIds.includes(region.id))
-          .map((region) => region.name)}
+        selectedRegions={selectedRegionIds}
+        regions={regions}
         minPrice={minPrice}
         maxPrice={maxPrice}
         minArea={minArea}
@@ -311,6 +316,9 @@ export default function Home() {
         resetPrice={resetPrice}
         resetArea={resetArea}
         resetAll={resetAll}
+        setSelectedRegionIds={setSelectedRegionIds}
+        setActiveRegionIds={setActiveRegionIds}
+        activeRegionIds={activeRegionIds}
       />
       <div className="absolute top-[301px] left-[162px]">
         <MainCard realEstates={filteredRealEstates} loading={loading} asSlider={false} />

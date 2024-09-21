@@ -12,30 +12,42 @@ export default function Properties({
   resetPrice,
   resetArea,
   resetAll,
+  setSelectedRegionIds,
+  setActiveRegionIds,
+  activeRegionIds,
+  regions,
 }: {
-  selectedRegions: string[];
+  selectedRegions: any;
   minPrice: number | null;
   maxPrice: number | null;
   minArea: number | null;
   maxArea: number | null;
   bedrooms: number | null;
+  activeRegionIds: any;
   resetBedrooms: () => void; // Define the type for the function
   resetRegions: () => void;
   resetPrice: () => void;
   resetArea: () => void;
   resetAll: () => void;
+  setSelectedRegionIds: any;
+  setActiveRegionIds: any;
+  regions: any;
 }) {
   return (
     <div className="absolute flex top-[240px] left-[162px] gap-[16px]">
       <div className="flex gap-[8px] items-center">
-        <div className={`${selectedRegions.length > 0 ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
-            onClick={resetRegions}
+        {selectedRegions.map((region: number) => (
+          <div key={region} className={`${selectedRegions.length > 0 ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
+            onClick={() => {
+              console.log(selectedRegions, region)
+              setSelectedRegionIds(selectedRegions.filter((id: number) => id !== region));
+              setActiveRegionIds(activeRegionIds.filter((id: number) => id !== region));
+            }}
           >
-          {selectedRegions.map((region, index) => (
-            <div key={index}>{region}{index < selectedRegions.length - 1 && ', '}</div>
-          ))} 
+            {regions.find((r: any) => r.id === region)?.name}
           <IoIosClose />
         </div>
+      ))} 
 
         <div className={`${minArea !== null ? 'flex' : "hidden"} items-center justify-center cursor-pointer border-[1px] rounded-[43px] gap-[4px] py-[6px] px-[10px] text-[14px]`}
           onClick={resetArea}

@@ -1,21 +1,30 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function RegionModal({
   isOpen,
   regions,
   onSelectRegions,
   onClose,
+  selectedRegionIds,
+  setSelectedRegionIds,
+  activeRegionIds,
+  setActiveRegionIds,
 }: {
   isOpen: boolean;
   regions: { id: number; name: string }[];
   onSelectRegions: (regionIds: number[]) => void;
   onClose: () => void;
+  selectedRegionIds: number[];
+  setSelectedRegionIds: any;
+  activeRegionIds: any;
+  setActiveRegionIds: any;
 }) {
   const [selected, setSelected] = useState<number[]>([]); // Change to store selected region IDs
+  // const [selectedRegionIds, setSelectedRegionIds] = useState<number[]>([]);
 
   const handleSelect = (regionId: number) => {
-    setSelected((prevSelected) =>
+    setActiveRegionIds((prevSelected: number[]) =>
       prevSelected.includes(regionId)
         ? prevSelected.filter((id) => id !== regionId)
         : [...prevSelected, regionId]
@@ -23,9 +32,21 @@ export default function RegionModal({
   };
 
   const applySelection = () => {
-    onSelectRegions(selected); // Send selected region IDs to parent
+    setSelectedRegionIds(activeRegionIds); // Update selected region IDs
+    console.log(activeRegionIds)
+    // onSelectRegions(selected); // Send selected region IDs to parent
     onClose(); // Close the modal
   };
+
+  useEffect(() => {
+    const savedFilters = localStorage.getItem('filterValues');
+    if (savedFilters) {
+      const { selectedRegionIds } = JSON.parse(savedFilters);
+      // setSelected(selectedRegionIds || []);}
+      setActiveRegionIds(selectedRegionIds)}
+    }, []);
+    // console.log(selectedRegionIds)
+
 
   return (
     <div className={`absolute z-10 bg-white top-[234px] left-[162px] w-[731px] rounded-[10px] border-[1px] border-[#DBDBDB] p-[24px] ${isOpen ? "block" : "hidden"}`}>
@@ -42,7 +63,7 @@ export default function RegionModal({
               >
                 <input
                   type="checkbox"
-                  checked={selected.includes(region.id)}
+                  checked={activeRegionIds.includes(region.id)}
                   onChange={() => handleSelect(region.id)} // Use ID instead of name
                   className="hidden peer"
                   id={`checkbox-${region.id}`}
@@ -53,7 +74,7 @@ export default function RegionModal({
                 >
                   <svg
                     className={`w-4 h-4 text-white ${
-                      selected.includes(region.id) ? "block" : "hidden"
+                      activeRegionIds.includes(region.id) ? "block" : "hidden"
                     }`}
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

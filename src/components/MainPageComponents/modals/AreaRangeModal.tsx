@@ -16,8 +16,16 @@ export default function AreaRangeModal({
   const applyAreaRange = () => {
     if (minArea !== null && maxArea !== null && maxArea > minArea) {
       onSelectAreaRange(minArea, maxArea);
-      onClose(); // Close the modal
+      onClose();
     }
+  };
+
+  const handleMinAreaClick = (value: number) => {
+    setMinArea(value);
+  };
+
+  const handleMaxAreaClick = (value: number) => {
+    setMaxArea(value);
   };
 
   return (
@@ -59,21 +67,29 @@ export default function AreaRangeModal({
             <div className="w-full flex flex-col gap-[16px]">
               <h3 className="text-start text-[#021526] font-medium text-[14px] leading-[16.8px]">მინ. მ²</h3>
               <ul>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
+                {[50, 75, 100, 125, 150].map((value) => (
+                  <li
+                    key={value}
+                    className="cursor-pointer hover:bg-gray-100 p-1"
+                    onClick={() => handleMinAreaClick(value)}
+                  >
+                    {value.toLocaleString()} მ²
+                  </li>
+                ))}
               </ul>
             </div>
             <div className="w-full flex flex-col gap-[16px]">
               <h3 className="text-start text-[#021526] font-medium text-[14px] leading-[16.8px]">მაქს. მ²</h3>
               <ul>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
-                <li>50,000 მ²</li>
+                {[75, 100, 125, 150, 200].map((value) => (
+                  <li
+                    key={value}
+                    className="cursor-pointer hover:bg-gray-100 p-1"
+                    onClick={() => handleMaxAreaClick(value)}
+                  >
+                    {value.toLocaleString()} მ²
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -81,7 +97,7 @@ export default function AreaRangeModal({
         <div className="w-full flex justify-end">
           <button
             className="rounded-[8px] py-[8px] px-[14px] bg-[#F93B1D] cursor-pointer font-medium text-white text-[14px] text-center leading-[16.8px]"
-              onClick={applyAreaRange}
+            onClick={applyAreaRange}
           >
             არჩევა
           </button>
