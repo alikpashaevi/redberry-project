@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoCheckmarkSharp } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
@@ -7,34 +7,21 @@ import axios from 'axios';
 export default function AddAgentModal({
   isAgentOpen,
   onClose,
-  // onAddAgent,
-  // agentname,
-  // agentSurname,
-  // agentEmail,
-  // agentPhone,
-  // agentImage,
 }: {
   isAgentOpen: boolean;
   onClose: () => void;
-  // onAddAgent: (
-  //   name: string,
-  //   surname: string,
-  //   email: string,
-  //   phone: string,
-  //   image: string,
-  // ) => void;
-  // agentname: string;
-  // agentSurname: string;
-  // agentEmail: string;
-  // agentPhone: string;
-  // agentImage: string;
 }) {
   const [name, setName] = useState("");
   const [surname, setSurname] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
   const [errors, setErrors] = useState({
+    name: "",
+    surname: "",
+    email: "",
+    phone: "",
+  });
+  const [isValid, setIsValid] = useState({
     name: false,
     surname: false,
     email: false,
@@ -43,72 +30,84 @@ export default function AddAgentModal({
 
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [fileError, setFileError] = useState("");
-  
-    const clearInputs = () => {
-      setName("");
-      setSurname("");
-      setEmail("");
-      setPhone("");
-      setUploadedImage(null);
-      setErrors({
-        name: false,
-        surname: false,
-        email: false,
-        phone: false,
-      });
-      setErrorMsg("");
-      setFileError("");
-    };
+  const [isImageRequired, setIsImageRequired] = useState(false);
+
+  const validateName = (value: string) => value.length >= 2;
+  const validateSurname = (value: string) => value.length >= 2;
+  const validateEmail = (value: string) => value.includes("@redberry.ge");
+  const validatePhone = (value: string) => value.startsWith("5") && value.length === 9 && /^\d+$/.test(value);
+
+  const handleInputChange = (field: string, value: string, validator: (value: string) => boolean) => {
+    const newErrors = { ...errors, [field]: "" };
+    const newIsValid = { ...isValid, [field]: validator(value) };
+    
+    setErrors(newErrors);
+    setIsValid(newIsValid);
+
+    switch (field) {
+      case 'name':
+        setName(value);
+        break;
+      case 'surname':
+        setSurname(value);
+        break;
+      case 'email':
+        setEmail(value);
+        break;
+      case 'phone':
+        setPhone(value);
+        break;
+    }
+  };
 
   const handleSubmit = async () => {
     const newErrors = {
-      name: name.length < 2,
-      surname: surname.length < 2,
-      email: !email.includes("@redberry.ge"),
-      phone: !(phone.startsWith("5") && phone.length === 9 && /^\d+$/.test(phone)),
+      name: !validateName(name) ? "შეიყვანეთ ვალიდური მონაცემები" : "",
+      surname: !validateSurname(surname) ? "შეიყვანეთ ვალიდური მონაცემები" : "",
+      email: !validateEmail(email) ? "შეიყვანეთ ვალიდური მონაცემები" : "",
+      phone: !validatePhone(phone) ? "შეიყვანეთ ვალიდური მონაცემები" : "",
     };
     
     setErrors(newErrors);
+    setIsImageRequired(!uploadedImage);
+
+    if (Object.values(newErrors).some((error) => error) || !uploadedImage) {
+      return;
+    }
   
-    if (Object.values(newErrors).some((error) => error)) {
-      setErrorMsg("შეიყვანეთ ვალიდური მონაცემები");
-    } else {
-      setErrorMsg("");
+    try {
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('surname', surname);
+      formData.append('email', email);
+      formData.append('phone', phone);
       
-      try {
-        const formData = new FormData();
-        formData.append('name', name);
-        formData.append('surname', surname);
-        formData.append('email', email);
-        formData.append('phone', phone);
-        
-        if (uploadedImage) {
-          // Convert base64 to blob
-          const response = await fetch(uploadedImage);
-          const blob = await response.blob();
-          formData.append('avatar', blob, 'avatar.jpg');
-        }
-
-        const response = await axios.post(
-          'https://api.real-estate-manager.redberryinternship.ge/api/agents',
-          formData,
-          {
-            headers: {
-              Authorization: "Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213",
-              'Content-Type': 'multipart/form-data',
-              'accept': 'application/json'
-            }
-          }
-        );
-
-        console.log('Agent added successfully:', response.data);
-        onClose();
-        clearInputs();
-      } catch (error) {
-        console.error('Error adding agent:', error);
-        setErrorMsg("Error adding agent. Please try again.");
+      if (uploadedImage) {
+        const response = await fetch(uploadedImage);
+        const blob = await response.blob();
+        formData.append('avatar', blob, 'avatar.jpg');
       }
-    }}
+
+      const response = await axios.post(
+        'https://api.real-estate-manager.redberryinternship.ge/api/agents',
+        formData,
+        {
+          headers: {
+            Authorization: "Bearer 9cfe53fd-50ef-4536-87f3-49a80fab2213",
+            'Content-Type': 'multipart/form-data',
+            'accept': 'application/json'
+          }
+        }
+      );
+
+      console.log('Agent added successfully:', response.data);
+      onClose();
+      clearInputs();
+    } catch (error) {
+      console.error('Error adding agent:', error);
+      setErrors(prev => ({...prev, general: "Error adding agent. Please try again."}));
+    }
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -123,6 +122,7 @@ export default function AddAgentModal({
       }
 
       setFileError("");
+      setIsImageRequired(false);
 
       const reader = new FileReader();
       reader.onload = (event) => {
@@ -131,10 +131,31 @@ export default function AddAgentModal({
       reader.readAsDataURL(file);
     }
   };
-
   const handleRemoveImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     setUploadedImage(null);
+  };
+
+  const clearInputs = () => {
+    setName("");
+    setSurname("");
+    setEmail("");
+    setPhone("");
+    setUploadedImage(null);
+    setErrors({
+      name: "",
+      surname: "",
+      email: "",
+      phone: "",
+    });
+    setIsValid({
+      name: false,
+      surname: false,
+      email: false,
+      phone: false,
+    });
+    setFileError("");
+    setIsImageRequired(false);
   };
 
   const handleClose = () => {
@@ -147,8 +168,6 @@ export default function AddAgentModal({
       handleClose();
     }
   };
-
-
 
   return (
     <div
@@ -170,17 +189,17 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.name ? "border-red-500" : "border-[#808A93]"
+                    errors.name ? "border-red-500" : isValid.name ? "border-green-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => handleInputChange('name', e.target.value, validateName)}
                 />
-                <div className={`text-[14px] leading-[16.8px] ${errorMsg ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                <div className={`text-[14px] leading-[16.8px] ${errors.name ? 'text-red-500' : isValid.name ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
                     <IoCheckmarkSharp />
                   </span>
-                  {errorMsg !== "" ? errorMsg : "მინიმუმ ორი სიმბოლო"}
+                  {errors.name || "მინიმუმ ორი სიმბოლო"}
                 </div>
               </div>
               <div className="flex flex-col gap-[4px] w-1/2">
@@ -189,17 +208,17 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.surname ? "border-red-500" : "border-[#808A93]"
+                    errors.surname ? "border-red-500" : isValid.surname ? "border-green-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={surname}
-                  onChange={(e) => setSurname(e.target.value)}
+                  onChange={(e) => handleInputChange('surname', e.target.value, validateSurname)}
                 />
-                <div className={`text-[14px] leading-[16.8px] ${errorMsg ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                <div className={`text-[14px] leading-[16.8px] ${errors.surname ? 'text-red-500' : isValid.surname ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
                     <IoCheckmarkSharp />
                   </span>
-                  {errorMsg !== "" ? errorMsg : "მინიმუმ ორი სიმბოლო"}
+                  {errors.surname || "მინიმუმ ორი სიმბოლო"}
                 </div>
               </div>
             </div>
@@ -210,17 +229,17 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.email ? "border-red-500" : "border-[#808A93]"
+                    errors.email ? "border-red-500" : isValid.email ? "border-green-500" : "border-[#808A93]"
                   }`}
-                  type="email"
+                  type="text"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => handleInputChange('email', e.target.value, validateEmail)}
                 />
-                <div className={`text-[14px] leading-[16.8px] ${errorMsg ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                <div className={`text-[14px] leading-[16.8px] ${errors.email ? 'text-red-500' : isValid.email ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
                     <IoCheckmarkSharp />
                   </span>
-                  {errorMsg !== "" ? errorMsg : "გამოიყენეთ @redberry.ge ფოსტა"}
+                  {errors.email || "გამოიყენეთ @redberry.ge ფოსტა"}
                 </div>
               </div>
               <div className="flex flex-col gap-[4px] w-1/2">
@@ -229,17 +248,17 @@ export default function AddAgentModal({
                 </span>
                 <input
                   className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                    errors.phone ? "border-red-500" : "border-[#808A93]"
+                    errors.phone ? "border-red-500" : isValid.phone ? "border-green-500" : "border-[#808A93]"
                   }`}
                   type="text"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => handleInputChange('phone', e.target.value, validatePhone)}
                 />
-                <div className={`text-[14px] leading-[16.8px] ${errorMsg ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
+                <div className={`text-[14px] leading-[16.8px] ${errors.phone ? 'text-red-500' : isValid.phone ? 'text-green-500' : ''} flex items-center gap-[7px]`}>
                   <span>
                     <IoCheckmarkSharp />
                   </span>
-                  {errorMsg !== "" ? errorMsg : "მხოლოდ რიცხვები"}
+                  {errors.phone || "მხოლოდ რიცხვები"}
                 </div>
               </div>
             </div>
@@ -247,7 +266,9 @@ export default function AddAgentModal({
               <span className="text-[14px] leading-[16.8px] font-medium">
                 ატვირთეთ ფოტო
               </span>
-              <div className={`flex items-center justify-center border-[1px] ${fileError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
+              <div className={`flex items-center justify-center border-[1px] ${
+                isImageRequired ? 'border-red-500' : fileError ? 'border-red-500' : 'border-[#2D3648]'
+              } h-[120px] rounded-[8px] border-dashed relative`}>
                 {uploadedImage ? (
                   <div className="relative h-[82px] w-[92px] rounded-[8px] ">
                     <img
@@ -278,8 +299,10 @@ export default function AddAgentModal({
                 className="hidden"
                 onChange={handleFileChange}
               />
-              {fileError && (
-                <span className="text-red-500 text-sm">{fileError}</span>
+              {(isImageRequired || fileError) && (
+                <span className="text-red-500 text-sm">
+                  {isImageRequired ? "შეიყვანეთ ვალიდური მონაცემებიx" : fileError}
+                </span>
               )}
             </div>
           </div>

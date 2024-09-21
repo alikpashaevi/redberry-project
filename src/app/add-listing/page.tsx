@@ -3,14 +3,21 @@ import { useState, useEffect } from 'react';
 import { IoCheckmarkSharp } from 'react-icons/io5';
 import { FaP, FaPlus } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
-import { IoIosArrowDown } from 'react-icons/io';
+import { IoIosArrowDown, IoIosCheckmark } from 'react-icons/io';
 import axios from 'axios';
 import AddAgentModal from '@/components/MainPageComponents/modals/AddAgentModal';
 
 export default function ListingPage() {
   const [address, setAddress] = useState('');
   const [postal, setPostal] = useState('');
-  const [errors, setErrors] = useState({ address: '', postal: '',area: '', price: '', bedrooms: '', description: '' });
+  const [errors, setErrors] = useState({
+    address: '',
+    postal: '',
+    area: '',
+    price: '',
+    bedrooms: '',
+    description: ''
+  });
   const [area, setArea] = useState<number | ''>('');
   const [price, setPrice] = useState<number | ''>('');
   const [bedrooms, setBedrooms] = useState<number | ''>('');
@@ -38,6 +45,17 @@ export default function ListingPage() {
   const [selectedRegionName, setSelectedRegionName] = useState('');
   const [selectedCity, setSelectedCity] = useState<number | null>(null);
 
+  const [regionError, setRegionError] = useState(false);
+  const [cityError, setCityError] = useState(false);
+  const [agentError, setAgentError] = useState(false); 
+  const [fileInputError, setFileInputError] = useState(false);
+
+  const [addressSuccess, setAddressSuccess] = useState(false);
+  const [postalSuccess, setPostalSuccess] = useState(false);
+  const [areaSuccess, setAreaSuccess] = useState(false);
+  const [priceSuccess, setPriceSuccess] = useState(false);
+  const [bedroomsSuccess, setBedroomsSuccess] = useState(false);
+  const [descriptionSuccess, setDescriptionSuccess] = useState(false);
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -117,15 +135,32 @@ export default function ListingPage() {
     let newErrors = { address: '', postal: '', area: '', price: '', bedrooms: '', description: '' };
     let hasErrors = false;
 
-    if (address.length < 2) {
-      newErrors.address = 'მინიმუმ ორი სიმბოლო';
+    setRegionError(false);
+    setCityError(false);
+    setAgentError(false);
+    setFileInputError(false);
+
+    // Check if file is uploaded
+    if (!uploadedImage) {
+      setFileInputError(true);
       hasErrors = true;
     }
 
-    if (!/^\d+$/.test(postal)) {
-      newErrors.postal = 'მხოლოდ რიცხვები';
+    if (!selectedRegion) {
+      setRegionError(true);
       hasErrors = true;
     }
+
+    if (!selectedCity) {
+      setCityError(true);
+      hasErrors = true;
+    }
+
+    if (!selectedAgentId) {
+      setAgentError(true);
+      hasErrors = true;
+    }
+
 
     // if (!/^\d+$/.test(area)) {
     //   newErrors.area = 'მხოლოდ რიცხვები';
@@ -142,10 +177,25 @@ export default function ListingPage() {
     //   hasErrors = true;
     // }
 
-    if (description.trim().split(/\s+/).length < 5) {
-      newErrors.description = 'მინიმუმ ხუთი სიტყვა';
+    if (address.trim().length < 2) {
+      newErrors.address = 'შეიყვანეთ ვალიდური მონაცემები';
+      setAddressSuccess(false);
       hasErrors = true;
     }
+  
+    // Postal code validation
+    if (!/^\d+$/.test(postal.trim())) {
+      newErrors.postal = 'შეიყვანეთ ვალიდური მონაცემები';
+      hasErrors = true;
+    }
+  
+    // Description validation
+    if (description.trim().split(/\s+/).length < 5) {
+      newErrors.description = 'შეიყვანეთ ვალიდური მონაცემები';
+      hasErrors = true;
+    }
+  
+  
 
     setErrors(newErrors);
 
@@ -219,15 +269,18 @@ export default function ListingPage() {
     if (file) {
       if (!file.type.startsWith("image/")) {
         setFileError("ფაილი უნდა იყოს სურათი");
+        setFileInputError(true);
         return;
       }
       if (file.size > 1024 * 1024) {
         setFileError("სურათი უნდა იყოს 1MB-ზე ნაკლები");
+        setFileInputError(true);
         return;
       }
-
+  
       setFileError("");
-
+      setFileInputError(false);
+  
       const reader = new FileReader();
       reader.onload = (event) => {
         setUploadedImage(event.target?.result as string);
@@ -304,17 +357,23 @@ export default function ListingPage() {
                   </span>
                   <input
                     className={`rounded-[6px] p-[10px] border-[1px] outline-none ${
-                      errors.address ? "border-red-500" : "border-[#808A93]"
+                      errors.address ? "border-red-500" : addressSuccess ? "border-green-500" : "border-[#808A93]"
                     }`}
                     type="text"
                     value={address}
-                    onChange={(e) => setAddress(e.target.value)}
+                    onChange={(e) => {
+                      setAddress(e.target.value);
+                      if (e.target.value.trim().length >= 2) {
+                        setErrors(prev => ({ ...prev, address: '' }));
+                        setAddressSuccess(true);
+                      } else {
+                        setAddressSuccess(false);
+                      }
+                    }}
+                    
                   />
-                  <div className={`text-[14px] leading-[16.8px] ${errors.address ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    <span>
-                      <IoCheckmarkSharp />
-                    </span>
-                    {errors.address || "მინიმუმ ორი სიმბოლო"}
+                  <div className={`text-[14px] leading-[16.8px] ${errors.address ? 'text-red-500' : addressSuccess ? 'text-green-500' : 'text-[#021526]'} flex items-center gap-[7px]`}>
+                    {errors.address ? <span>{errors.address}</span> : <span className="flex items-center gap-[5px]"><IoCheckmarkSharp/>მინიმუმ ორი სიმბოლო</span>}
                   </div>
                 </div>
                 <div className="flex flex-col gap-[4px] w-1/2">
@@ -327,13 +386,16 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={postal}
-                    onChange={(e) => setPostal(e.target.value)}
+                    onChange={(e) => {
+                      setPostal(e.target.value);
+                      if (/^\d+$/.test(e.target.value.trim())) {
+                        setErrors(prev => ({ ...prev, postal: '' }));
+                        setPostalSuccess(true);
+                      }
+                    }}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.postal ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    <span>
-                      <IoCheckmarkSharp />
-                    </span>
-                    {errors.postal || "მხოლოდ რიცხვები"}
+                    {errors.postal ? <span>{errors.postal}</span> : <span className={`flex items-center gap-[5px] ${postalSuccess ? "text-green-500": "text-[#021526]"}`}><IoCheckmarkSharp/>მხოლოდ რიცხვები</span>}
                   </div>
                 </div>
               </div>
@@ -343,7 +405,9 @@ export default function ListingPage() {
                     რეგიონი
                   </span>
                   <div
-                    className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isRegionDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
+                    className={`w-full flex justify-between items-center p-[10px] border ${
+                      regionError ? 'border-red-500' : 'border-[#808A93]'
+                    } ${isRegionDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
                     onClick={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}
                   >
                     {selectedRegionName || 'არჩევა'} 
@@ -372,7 +436,9 @@ export default function ListingPage() {
                     ქალაქი
                   </span>
                   <div
-                    className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isCityDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer ${!selectedRegion ? 'opacity-50' : ''}`}
+                    className={`w-full flex justify-between items-center p-[10px] border ${
+                      cityError ? 'border-red-500' : 'border-[#808A93]'
+                    } ${isCityDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer ${!selectedRegion ? 'opacity-50' : ''}`}
                     onClick={() => selectedRegion && setIsCityDropdownOpen(!isCityDropdownOpen)}
                   >
                     {selectedCityName || 'არჩევა'} 
@@ -466,7 +532,7 @@ export default function ListingPage() {
                 </div>
               </div>
               <div className="flex gap-[30px] w-full">
-                <div className="flex flex-col gap-[4px] w-full">
+              <div className="flex flex-col gap-[4px] w-full">
                   <span className="text-[14px] leading-[16.8px] font-medium">
                     აღწერა
                   </span>
@@ -475,13 +541,18 @@ export default function ListingPage() {
                       errors.description ? "border-red-500" : "border-[#808A93]"
                     }`}
                     value={description}
-                    onChange={(e) => setDescription(e.target.value)}
+                    onChange={(e) => {
+                      setDescription(e.target.value);
+                      if (e.target.value.trim().split(/\s+/).length >= 5) {
+                        setErrors(prev => ({ ...prev, description: '' }));
+                        setDescriptionSuccess(true);
+                      } else {
+                        setDescriptionSuccess(false);
+                      }
+                    }}
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.description ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
-                    <span>
-                      <IoCheckmarkSharp />
-                    </span>
-                    {errors.description || "მინიმუმ ხუთი სიტყვა"}
+                    {errors.description ? <span>{errors.description}</span> : <span className={`flex items-center gap-[5px] ${descriptionSuccess ? "text-green-500": "text-[#021526]"}`}><IoCheckmarkSharp/>მინიმუმ 5 სიტყვა</span>}
                   </div>
                 </div>
               </div>
@@ -489,7 +560,7 @@ export default function ListingPage() {
                 <span className="text-[14px] leading-[16.8px] font-medium">
                       ატვირთეთ ფოტო *
                     </span>
-                <div className={`flex items-center justify-center border-[1px] ${fileError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
+                    <div className={`flex items-center justify-center border-[1px] ${fileInputError ? 'border-red-500' : 'border-[#2D3648]'} h-[120px] rounded-[8px] border-dashed relative`}>
                   {uploadedImage ? (
                     <div className="relative h-[82px] w-[92px] rounded-[8px] ">
                       <img
@@ -515,13 +586,13 @@ export default function ListingPage() {
                   )}
                 </div>
                 <input
-                id="fileInput"
-                type="file"
-                className="hidden"
-                onChange={handleFileChange}
+                  id="fileInput"
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
                 />
-                {fileError && (
-                  <span className="text-red-500 text-sm">{fileError}</span>
+                {fileInputError && (
+                  <span className="text-red-500 text-sm">შეიყვანეთ ვალიდური მონაცემები</span>
                 )}
               </div>
             </div>
@@ -530,10 +601,12 @@ export default function ListingPage() {
             {/* ---------the agent dropdown menu------- */}
             <div className="relative w-[384px] font-normal select-none">
               <div
-                className={`w-full flex justify-between items-center p-[10px] border border-[#808A93] ${isDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
+                className={`w-full flex justify-between items-center p-[10px] border ${
+                  agentError ? 'border-red-500' : 'border-[#808A93]'
+                } ${isDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
-                {selectedAgent || 'აირჩიე'} 
+                {selectedAgent || 'არჩევა'} 
                 <IoIosArrowDown />
               </div>
               {isDropdownOpen && (
