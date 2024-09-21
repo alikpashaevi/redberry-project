@@ -56,6 +56,11 @@ export default function ListingPage() {
   const [priceSuccess, setPriceSuccess] = useState(false);
   const [bedroomsSuccess, setBedroomsSuccess] = useState(false);
   const [descriptionSuccess, setDescriptionSuccess] = useState(false);
+
+  const [regionSelected, setRegionSelected] = useState(false);
+  const [citySelected, setCitySelected] = useState(false);
+  const [agentSelected, setAgentSelected] = useState(false);
+
   useEffect(() => {
     const fetchRegions = async () => {
       try {
@@ -363,8 +368,8 @@ export default function ListingPage() {
                     value={address}
                     onChange={(e) => {
                       setAddress(e.target.value);
+                      setErrors(prev => ({ ...prev, address: '' })); // Clear the error message immediately
                       if (e.target.value.trim().length >= 2) {
-                        setErrors(prev => ({ ...prev, address: '' }));
                         setAddressSuccess(true);
                       } else {
                         setAddressSuccess(false);
@@ -388,9 +393,11 @@ export default function ListingPage() {
                     value={postal}
                     onChange={(e) => {
                       setPostal(e.target.value);
+                      setErrors(prev => ({ ...prev, postal: '' })); // Clear the error message immediately
                       if (/^\d+$/.test(e.target.value.trim())) {
-                        setErrors(prev => ({ ...prev, postal: '' }));
                         setPostalSuccess(true);
+                      } else {
+                        setPostalSuccess(false);
                       }
                     }}
                   />
@@ -406,7 +413,7 @@ export default function ListingPage() {
                   </span>
                   <div
                     className={`w-full flex justify-between items-center p-[10px] border ${
-                      regionError ? 'border-red-500' : 'border-[#808A93]'
+                      regionError ? 'border-red-500' : regionSelected ? 'border-[#808A93]' : 'border-[#808A93]'
                     } ${isRegionDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
                     onClick={() => setIsRegionDropdownOpen(!isRegionDropdownOpen)}
                   >
@@ -423,6 +430,8 @@ export default function ListingPage() {
                             setSelectedRegion(region.id);
                             setSelectedRegionName(region.name);
                             setIsRegionDropdownOpen(false);
+                            setRegionSelected(true);
+                            setRegionError(false);
                           }}
                         >
                           {region.name}
@@ -437,7 +446,7 @@ export default function ListingPage() {
                   </span>
                   <div
                     className={`w-full flex justify-between items-center p-[10px] border ${
-                      cityError ? 'border-red-500' : 'border-[#808A93]'
+                      cityError ? 'border-red-500' : citySelected ? 'border-[#808A93]' : 'border-[#808A93]'
                     } ${isCityDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer ${!selectedRegion ? 'opacity-50' : ''}`}
                     onClick={() => selectedRegion && setIsCityDropdownOpen(!isCityDropdownOpen)}
                   >
@@ -453,8 +462,9 @@ export default function ListingPage() {
                           onClick={() => {
                             setSelectedCityName(city.name);
                             setIsCityDropdownOpen(false);
-                            setSelectedCity(city.id); 
-                            // You might want to store the selected city ID as well
+                            setSelectedCity(city.id);
+                            setCitySelected(true);
+                            setCityError(false);
                           }}
                         >
                           {city.name}
@@ -480,7 +490,16 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={price}
-                    onChange={(e) => setPrice(parseInt(e.target.value))}
+                    onChange={(e) => {
+                      setPrice(parseInt(e.target.value));
+                      setErrors(prev => ({ ...prev, price: '' }));
+                      if (/^\d+$/.test(e.target.value.trim())) {
+                        setPriceSuccess(true);
+                      } else {
+                        setPriceSuccess(false);
+                      }
+                    }}
+                    
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.price ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
@@ -499,7 +518,16 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={area}
-                    onChange={(e) => setArea(parseInt(e.target.value))}
+                    onChange={(e) => {
+                      setArea(parseInt(e.target.value));
+                      setErrors(prev => ({ ...prev, area: '' }));
+                      if (/^\d+$/.test(e.target.value.trim())) {
+                        setAreaSuccess(true);
+                      } else {
+                        setAreaSuccess(false);
+                      }
+                    }}
+                    
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.area ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span >
@@ -521,7 +549,16 @@ export default function ListingPage() {
                     }`}
                     type="text"
                     value={bedrooms}
-                    onChange={(e) => setBedrooms(parseInt(e.target.value))}
+                    onChange={(e) => {
+                      setBedrooms(parseInt(e.target.value));
+                      setErrors(prev => ({ ...prev, bedrooms: '' }));
+                      if (/^\d+$/.test(e.target.value.trim())) {
+                        setBedroomsSuccess(true);
+                      } else {
+                        setBedroomsSuccess(false);
+                      }
+                    }}
+                    
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.bedrooms ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     <span>
@@ -543,13 +580,14 @@ export default function ListingPage() {
                     value={description}
                     onChange={(e) => {
                       setDescription(e.target.value);
+                      setErrors(prev => ({ ...prev, description: '' }));
                       if (e.target.value.trim().split(/\s+/).length >= 5) {
-                        setErrors(prev => ({ ...prev, description: '' }));
                         setDescriptionSuccess(true);
                       } else {
                         setDescriptionSuccess(false);
                       }
                     }}
+                    
                   />
                   <div className={`text-[14px] leading-[16.8px] ${errors.description ? 'text-red-500' : ''} flex items-center gap-[7px]`}>
                     {errors.description ? <span>{errors.description}</span> : <span className={`flex items-center gap-[5px] ${descriptionSuccess ? "text-green-500": "text-[#021526]"}`}><IoCheckmarkSharp/>მინიმუმ 5 სიტყვა</span>}
@@ -602,7 +640,7 @@ export default function ListingPage() {
             <div className="relative w-[384px] font-normal select-none">
               <div
                 className={`w-full flex justify-between items-center p-[10px] border ${
-                  agentError ? 'border-red-500' : 'border-[#808A93]'
+                  agentError ? 'border-red-500' : agentSelected ? 'border-[#808A93]' : 'border-[#808A93]'
                 } ${isDropdownOpen ? "rounded-t-[6px] border-b-0" : "rounded-[6px]"} cursor-pointer`}
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               >
@@ -627,6 +665,8 @@ export default function ListingPage() {
                         setSelectedAgentId(agent.id);
                         setSelectedAgent(`${agent.name} ${agent.surname}`);
                         setIsDropdownOpen(false);
+                        setAgentError(false);
+                        setAgentSelected(true);
                       }}
                     >
                       {`${agent.name} ${agent.surname}`}
