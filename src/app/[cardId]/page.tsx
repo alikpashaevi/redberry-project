@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import leftArrow from "../../public/icons/leftArrow.png";
 
-export default function cardMainPage ({ params }: { params: { cardId: number} }) {
+export default function CardMainPage ({ params }: { params: { cardId: number} }) {
 
   interface CardInfoProps {
     id: number,
