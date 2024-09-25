@@ -4,6 +4,7 @@
     "no-console": "off",
     "react/prop-types": "off",
     "react/jsx-uses-react": "off",
+    "prefer-const": "off",
     "react/react-in-jsx-scope": "off",
     "react-hooks/exhaustive-deps": "off",
     "jsx-a11y/click-events-have-key-events": "warn",
